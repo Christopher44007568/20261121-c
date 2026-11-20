@@ -1,0 +1,100 @@
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/noto-sans-sc-ui.woff2") format("woff2");
+  unicode-range: U+3000-303f, U+3400-9fff, U+ff00-ffef;
+}
+
+:root {
+  color-scheme: dark;
+  --ink: #d9e5df;
+  --muted: #84958e;
+  --dim: #53645d;
+  --paper: #0a100e;
+  --panel: #0f1714;
+  --panel-2: #131e1a;
+  --line: #26342e;
+  --line-bright: #3b4f46;
+  --mint: #8df0c9;
+  --mint-soft: rgba(141, 240, 201, 0.12);
+  --amber: #ffb86b;
+  --coral: #ff786b;
+  --blue: #7fb5ff;
+  --mono: "SFMono-Regular", "Cascadia Code", "Roboto Mono", Consolas, "Noto Sans SC", monospace;
+  --sans: "Avenir Next", "Segoe UI", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  min-width: 320px;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 48% -20%, rgba(74, 131, 106, 0.18), transparent 45%),
+    var(--paper);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.micro {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mint);
+  box-shadow: 0 0 10px rgba(141, 240, 201, 0.8);
+}
+
+.dot.amber {
+  background: var(--amber);
+  box-shadow: 0 0 10px rgba(255, 184, 107, 0.7);
+}
+
+.dot.coral {
+  background: var(--coral);
+  box-shadow: 0 0 10px rgba(255, 120, 107, 0.7);
+}
