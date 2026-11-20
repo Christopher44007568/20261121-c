@@ -1,0 +1,9 @@
+/home/hj/userfeedback2/uid5-0012/pipeview/target/release/build/ab_glyph_rasterizer/60f262ef531d9559/out/ab_glyph_rasterizer-60f262ef531d9559.d: /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/ab_glyph_rasterizer-0.1.10/src/lib.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/ab_glyph_rasterizer-0.1.10/src/geometry.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/ab_glyph_rasterizer-0.1.10/src/raster.rs
+
+/home/hj/userfeedback2/uid5-0012/pipeview/target/release/build/ab_glyph_rasterizer/60f262ef531d9559/out/libab_glyph_rasterizer-60f262ef531d9559.rlib: /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/ab_glyph_rasterizer-0.1.10/src/lib.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/ab_glyph_rasterizer-0.1.10/src/geometry.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/ab_glyph_rasterizer-0.1.10/src/raster.rs
+
+/home/hj/userfeedback2/uid5-0012/pipeview/target/release/build/ab_glyph_rasterizer/60f262ef531d9559/out/libab_glyph_rasterizer-60f262ef531d9559.rmeta: /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/ab_glyph_rasterizer-0.1.10/src/lib.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/ab_glyph_rasterizer-0.1.10/src/geometry.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/ab_glyph_rasterizer-0.1.10/src/raster.rs
+
+/home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/ab_glyph_rasterizer-0.1.10/src/lib.rs:
+/home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/ab_glyph_rasterizer-0.1.10/src/geometry.rs:
+/home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/ab_glyph_rasterizer-0.1.10/src/raster.rs:

@@ -1,0 +1,9 @@
+/home/hj/userfeedback2/uid5-0012/pipeview/target/debug/build/find-msvc-tools/6028d15a63b0615f/out/find_msvc_tools-6028d15a63b0615f.d: /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/find-msvc-tools-0.1.15/src/lib.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/find-msvc-tools-0.1.15/src/find_tools.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/find-msvc-tools-0.1.15/src/tool.rs
+
+/home/hj/userfeedback2/uid5-0012/pipeview/target/debug/build/find-msvc-tools/6028d15a63b0615f/out/libfind_msvc_tools-6028d15a63b0615f.rlib: /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/find-msvc-tools-0.1.15/src/lib.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/find-msvc-tools-0.1.15/src/find_tools.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/find-msvc-tools-0.1.15/src/tool.rs
+
+/home/hj/userfeedback2/uid5-0012/pipeview/target/debug/build/find-msvc-tools/6028d15a63b0615f/out/libfind_msvc_tools-6028d15a63b0615f.rmeta: /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/find-msvc-tools-0.1.15/src/lib.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/find-msvc-tools-0.1.15/src/find_tools.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/find-msvc-tools-0.1.15/src/tool.rs
+
+/home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/find-msvc-tools-0.1.15/src/lib.rs:
+/home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/find-msvc-tools-0.1.15/src/find_tools.rs:
+/home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/find-msvc-tools-0.1.15/src/tool.rs:

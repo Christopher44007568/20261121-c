@@ -1,0 +1,10 @@
+/home/hj/userfeedback2/uid5-0012/pipeview/target/release/build/log/234542b3ae726ccc/out/log-234542b3ae726ccc.d: /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/lib.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/macros.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/serde.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/__private_api.rs
+
+/home/hj/userfeedback2/uid5-0012/pipeview/target/release/build/log/234542b3ae726ccc/out/liblog-234542b3ae726ccc.rlib: /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/lib.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/macros.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/serde.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/__private_api.rs
+
+/home/hj/userfeedback2/uid5-0012/pipeview/target/release/build/log/234542b3ae726ccc/out/liblog-234542b3ae726ccc.rmeta: /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/lib.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/macros.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/serde.rs /home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/__private_api.rs
+
+/home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/lib.rs:
+/home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/macros.rs:
+/home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/serde.rs:
+/home/hj/.codex-relay-home-ibqjvvdz/.cargo/registry/src/rsproxy.cn-e3de039b2554c837/log-0.4.35/src/__private_api.rs:

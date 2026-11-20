@@ -1,0 +1,14 @@
+[package]
+name = "pipe-bench"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+pipe-core = { path = "../pipe-core" }
+rand = { workspace = true }
+bytemuck = { workspace = true }
+wgpu = { workspace = true }
+pollster = { workspace = true }
+
+[features]
+gpu = []
