@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FIBER / INK</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <div>
+            <div class="brand-name">FIBER<span>/</span>INK</div>
+            <div class="brand-sub">水分与沉积研究室 · 04</div>
+          </div>
+        </div>
+        <div class="top-status">
+          <span class="live-dot"></span>
+          <span id="gpuLabel">WEBGL2 · 初始化</span>
+          <span class="top-divider"></span>
+          <span id="clockReadout">00:00:00</span>
+        </div>
+        <div class="top-actions">
+          <button class="icon-button" id="toggleGuide" title="显示/隐藏操作提示">
+            <span class="icon">?</span>
+          </button>
+          <button class="ghost-button" id="resetButton">清空纸面</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="tool-rail">
+          <section class="panel-section">
+            <div class="section-kicker">TOOLS</div>
+            <h2>落笔方式</h2>
+            <div class="tool-grid" role="group" aria-label="画笔工具">
+              <button class="tool-button is-active" data-tool="brush">
+                <span class="tool-glyph brush-glyph"></span>
+                <span>蘸墨笔</span>
+                <kbd>B</kbd>
+              </button>
+              <button class="tool-button" data-tool="water">
+                <span class="tool-glyph water-glyph"></span>
+                <span>蘸水</span>
+                <kbd>W</kbd>
+              </button>
+              <button class="tool-button" data-tool="pan">
+                <span class="tool-glyph pan-glyph"></span>
+                <span>移视图</span>
+                <kbd>H</kbd>
+              </button>
+            </div>
+          </section>
+
+          <section class="panel-section">
+            <div class="section-kicker">PIGMENT</div>
+            <h2>颜料</h2>
+            <div class="palette" id="palette">
+              <button class="swatch is-active" data-color="ink" style="--swatch:#191c1b" title="松烟"></button>
+              <button class="swatch" data-color="indigo" style="--swatch:#293d71" title="花青"></button>
+              <button class="swatch" data-color="cinnabar" style="--swatch:#a94e31" title="朱砂"></button>
+              <button class="swatch" data-color="ochre" style="--swatch:#9d7a37" title="赭石"></button>
+            </div>
+            <div class="slider-block">
+              <label for="pigmentAmount"><span>墨量</span><output id="pigmentAmountOut">62</output></label>
+              <input id="pigmentAmount" type="range" min="12" max="100" value="62" />
+            </div>
+            <div class="slider-block">
+              <label for="brushWater"><span>笔中含水量</span><output id="brushWaterOut">72</output></label>
+              <input id="brushWater" type="range" min="10" max="100" value="72" />
+            </div>
+          </section>
+
+          <section class="panel-section paper-controls">
+            <div class="section-kicker">PAPER ANISOTROPY</div>
+            <h2>纸纤维</h2>
+            <div class="fiber-dial-row">
+              <div class="fiber-dial" id="fiberDial">
+                <div class="dial-ring"></div>
+                <div class="dial-needle" id="dialNeedle"></div>
+                <div class="dial-center"></div>
+              </div>
+              <div class="fiber-readout">
+                <span id="fiberAngleOut">18°</span>
+                <small>主纤维方向</small>
+              </div>
+            </div>
+            <input id="fiberAngle" class="angle-slider" type="range" min="0" max="180" value="18" />
+            <div class="slider-block">
+              <label for="fiberAnisotropy"><span>方向性</span><output id="fiberAnisotropyOut">0.72</output></label>
+              <input id="fiberAnisotropy" type="range" min="0" max="100" value="72" />
+            </div>
+            <label class="check-row">
+              <input id="showFibers" type="checkbox" checked />
+              <span class="fake-check"></span>
+              <span>显示纤维纹理</span>
+            </label>
+          </section>
+
+          <section class="panel-section brush-size-section">
+            <div class="section-kicker">BRUSH</div>
+            <div class="slider-block">
+              <label for="brushSize"><span>笔径</span><output id="brushSizeOut">34 px</output></label>
+              <input id="brushSize" type="range" min="4" max="96" value="34" />
+            </div>
+          </section>
+        </aside>
+
+        <section class="stage-column">
+          <div class="stage-head">
+            <div>
+              <div class="section-kicker">CONTROLLED STUDY</div>
+              <h1>纤维导流下的水墨扩散</h1>
+            </div>
+            <div class="stage-badges">
+              <span class="metric-badge">域 <b id="domainLabel">960 × 640</b></span>
+              <span class="metric-badge">步骤 <b id="stepLabel">0000</b></span>
+              <span class="metric-badge is-warm" id="stateBadge">运行中</span>
+            </div>
+          </div>
+
+          <div class="paper-frame" id="paperFrame">
+            <div class="paper-corner corner-tl"></div>
+            <div class="paper-corner corner-tr"></div>
+            <div class="paper-corner corner-bl"></div>
+            <div class="paper-corner corner-br"></div>
+            <canvas id="glCanvas" width="960" height="640" aria-label="GPU 水墨仿真画布"></canvas>
+            <div class="canvas-hint" id="canvasHint">
+              <span class="hint-line"></span>
+              <p>在纸上拖动落笔。按 <b>W</b> 蘸水唤醒已沉积的颜料。</p>
+            </div>
+            <div class="view-hud">
+              <button id="zoomOut" title="缩小视图">−</button>
+              <span id="zoomLabel">100%</span>
+              <button id="zoomIn" title="放大视图">+</button>
+              <button id="zoomFit" title="适配视图">FIT</button>
+            </div>
+            <div class="sim-toast" id="simToast"></div>
+          </div>
+
+          <div class="stage-footer">
+            <div class="legend-row">
+              <span><i class="legend-dot wet"></i>含水量</span>
+              <span><i class="legend-dot deposit"></i>沉积量</span>
+              <span class="fiber-legend" id="fiberLegend">纤维 18° · 各向异性 0.72</span>
+            </div>
+            <div class="viewport-note">缩放仅改变观察，仿真域始终为 <b id="domainNote">960 × 640</b></div>
+          </div>
+        </section>
+
+        <aside class="inspector">
+          <section class="inspector-section simulation-section">
+            <div class="section-kicker">SIMULATION</div>
+            <div class="play-row">
+              <button class="play-button" id="playButton" aria-label="暂停">
+                <span id="playIcon" class="pause-icon"></span>
+              </button>
+              <div>
+                <b id="playLabel">仿真运行中</b>
+                <small id="speedLabel">1.00 步 / 帧</small>
+              </div>
+              <button class="step-button" id="stepButton" title="单步">+1</button>
+            </div>
+            <div class="slider-block">
+              <label for="simSpeed"><span>推进速率</span><output id="simSpeedOut">1.0×</output></label>
+              <input id="simSpeed" type="range" min="0" max="300" value="100" />
+            </div>
+            <div class="slider-block">
+              <label for="evaporation"><span>水分消退</span><output id="evaporationOut">0.0052</output></label>
+              <input id="evaporation" type="range" min="2" max="30" value="8" />
+            </div>
+          </section>
+
+          <section class="inspector-section">
+            <div class="section-kicker">CONSERVATION MONITOR</div>
+            <div class="diagnostic-grid">
+              <div><span>移动颜料</span><b id="mobileMass">0.000</b></div>
+              <div><span>沉积颜料</span><b id="depositMass">0.000</b></div>
+              <div><span>总颜料</span><b id="totalMass">0.000</b></div>
+              <div><span>含水量</span><b id="waterMass">0.000</b></div>
+            </div>
+            <div class="conservation-bar">
+              <div class="conservation-fill" id="conservationFill"></div>
+            </div>
+            <div class="micro-readout">
+              <span>边界通量</span><b id="boundaryFlux">0.0000</b>
+              <span>守恒误差</span><b id="massError">0.000%</b>
+            </div>
+          </section>
+
+          <section class="inspector-section tests-section">
+            <div class="section-kicker">REPRODUCIBLE TESTS</div>
+            <h2>受控笔划诊断</h2>
+            <div class="test-actions">
+              <button data-test="cross"><span>01</span>交叉扩散</button>
+              <button data-test="boundary"><span>02</span>无通量边界</button>
+              <button data-test="conservation"><span>03</span>全局守恒</button>
+            </div>
+            <button class="primary-button" id="runAllTests">
+              <span class="spark-icon"></span>
+              运行全部诊断
+            </button>
+            <div class="test-report" id="testReport">
+              <div class="report-empty">尚未运行诊断。受控笔划会重置纸面。</div>
+            </div>
+          </section>
+
+          <section class="inspector-section export-section">
+            <div class="section-kicker">PROCESS EXPORT</div>
+            <div class="export-head">
+              <h2>过程帧</h2>
+              <span>PNG · 960×640</span>
+            </div>
+            <p>自动绘制交叉笔划，按固定步长导出完整扩散序列，并附测试清单。</p>
+            <button class="export-button" id="exportButton">
+              <span class="export-icon"></span>
+              <span>导出过程帧</span>
+              <b>↗</b>
+            </button>
+            <div class="export-progress" id="exportProgress">
+              <div class="export-progress-fill" id="exportProgressFill"></div>
+            </div>
+            <div class="export-status" id="exportStatus">准备就绪</div>
+          </section>
+        </aside>
+      </main>
+
+      <footer class="statusbar">
+        <span id="statusMessage">GPU 管线就绪 · 线性过滤 · RGBA16F 仿真</span>
+        <span id="cursorReadout">X — / Y —</span>
+        <span id="fpsReadout">60 FPS</span>
+      </footer>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

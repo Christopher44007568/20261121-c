@@ -1,0 +1,16 @@
+{
+  "name": "fiber-ink-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GPU watercolor diffusion study with directional paper fibers",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:headless": "INK_GPU_MODE=swiftshader electron . --no-sandbox --disable-gpu-sandbox",
+    "test": "node tests/run-tests.js"
+  },
+  "devDependencies": {
+    "electron": "^45.4.1",
+    "playwright-core": "^1.58.0"
+  }
+}
