@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MapLibre 自定义层 · 拓扑宽描边与双切割覆盖度</title>
+  <link rel="stylesheet" href="vendor/maplibre-gl.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="map"></div>
+
+  <section id="hud">
+    <h1>道路中心线宽描边</h1>
+
+    <div class="block">
+      <h2>瓦片切割方案</h2>
+      <label><input type="radio" name="scheme" value="A" checked /> 方案 A · 标准网格</label>
+      <label><input type="radio" name="scheme" value="B" /> 方案 B · n1 落在边界</label>
+      <label><input type="checkbox" id="boundaries" checked /> 显示瓦片边界</label>
+      <button id="clearCache">清空图层缓存</button>
+    </div>
+
+    <div class="block">
+      <h2>连接处屏幕像素覆盖</h2>
+      <canvas id="diffCanvas" width="180" height="140"></canvas>
+      <table>
+        <tbody id="coverageTable"></tbody>
+      </table>
+      <button id="rerunCompare">重新比较当前视口</button>
+    </div>
+
+    <div class="block">
+      <h2>图层缓存</h2>
+      <table>
+        <tbody id="cacheTable"></tbody>
+      </table>
+      <div id="cacheLog" class="log"></div>
+    </div>
+
+    <div class="block legend">
+      <h2>图例</h2>
+      <p><i class="swatch ground"></i>地面路（T 节点共享斜接，圆端帽）</p>
+      <p><i class="swatch bridge"></i>高架路（独立 casing，跨线不连通）</p>
+      <p><i class="swatch junction-t"></i>T 型三路交点</p>
+      <p><i class="swatch overpass"></i>高架交叉（带桥接间隙）</p>
+    </div>
+  </section>
+
+  <script src="vendor/maplibre-gl.js"></script>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

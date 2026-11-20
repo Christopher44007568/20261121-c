@@ -1,0 +1,14 @@
+{
+  "name": "maplibre-topology-strokes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "MapLibre 自定义层宽描边、拓扑区分、双切割覆盖度比较与缓存恢复演示",
+  "scripts": {
+    "test": "node --test",
+    "start": "node server.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.1"
+  }
+}
