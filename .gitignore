@@ -1,0 +1,9 @@
+.venv/
+.syslibs/
+__pycache__/
+artifacts/frames/
+artifacts/trace.jsonl
+artifacts/recording.mp4
+artifacts/report.txt
+artifacts/smoke.png
+artifacts/snap*.png
