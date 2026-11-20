@@ -1,0 +1,9 @@
+{
+  "name": "boundary-stitch-preview",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test": "node test/run_tests.js",
+    "start": "python3 -m http.server 8000"
+  }
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>非等长边界缝合预览</title>
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; overflow: hidden; }
+  #ui {
+    position: fixed; top: 10px; left: 10px; z-index: 10;
+    background: rgba(255,255,255,0.92); padding: 10px 12px; border-radius: 8px;
+    font-size: 13px; line-height: 1.9; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  button, select { margin-right: 6px; font-size: 13px; }
+  #hint { color: #555; max-width: 340px; }
+</style>
+</head>
+<body>
+<div id="ui">
+  <div>
+    <select id="scenario">
+      <option value="unequal">长短不一的边界</option>
+      <option value="reversed">反向边界</option>
+      <option value="notch">带凹口的布片</option>
+    </select>
+    <button id="addAnchor">添加锚点</button>
+    <button id="export">导出 glTF</button>
+  </div>
+  <div id="hint">
+    拖动彩色球移动锚点（自动吸附边界）；右键点击球删除锚点对；
+    点“添加锚点”后依次点击 A 片边界、B 片边界。
+  </div>
+  <div id="status"></div>
+</div>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three.module.js",
+    "three/addons/controls/OrbitControls.js": "./vendor/OrbitControls.js"
+  }
+}
+</script>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
