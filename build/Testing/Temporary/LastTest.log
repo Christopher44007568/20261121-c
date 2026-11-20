@@ -1,0 +1,19 @@
+Start testing: Nov 21 03:45 CST
+----------------------------------------------------------
+1/1 Testing: render_graph_tests
+1/1 Test: render_graph_tests
+Command: "/home/hj/userfeedback2/uid5-0021/build/render_graph_tests"
+Directory: /home/hj/userfeedback2/uid5-0021/build
+"render_graph_tests" start time: Nov 21 03:45 CST
+Output:
+----------------------------------------------------------
+render graph tests passed
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"render_graph_tests" end time: Nov 21 03:45 CST
+"render_graph_tests" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Nov 21 03:45 CST

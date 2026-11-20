@@ -1,0 +1,12 @@
+flowchart LR
+  classDef pass fill:#dbeafe,stroke:#1d4ed8,color:#111827
+  classDef resource fill:#fef3c7,stroke:#b45309,color:#111827
+  classDef imported fill:#dcfce7,stroke:#15803d,color:#111827
+  classDef error fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
+  P0["#1 shadow_receiver<br/>R:shadow_map W:lit_scene"]:::pass
+  P1["#0 shadow_caster<br/>W:shadow_map"]:::pass
+  R0(["shadow_map<br/>R32_SFLOAT 640x360"]):::resource
+  R1(["lit_scene<br/>RGBA16_SFLOAT 640x360"]):::resource
+  P0 -->|write| R1
+  R0 -->|read| P0
+  P1 -->|write| R0

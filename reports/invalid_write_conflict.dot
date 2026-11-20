@@ -1,0 +1,11 @@
+digraph "invalid_write_conflict" {
+  rankdir=LR;
+  node [fontname="monospace"];
+  p0 [label="#? first_writer\nW:target",shape=box,style="filled",fillcolor="#dbeafe"];
+  p1 [label="#? second_writer\nW:target",shape=box,style="filled",fillcolor="#dbeafe"];
+  r0 [label="target\nRGBA8_UNORM",shape=ellipse,style="filled",fillcolor="#fef3c7"];
+  p0 -> r0 [label="write"];
+  p1 -> r0 [label="write"];
+  e0 [label="multiple-writers\nwrite/write conflict: pass 'second_writer' and pass 'first_writer' both write 'target'; render graph resources are single-assignment",shape=note,style="filled",fillcolor="#fee2e2",color="#b91c1c"];
+  p1 -> e0 [style=dotted,color="#b91c1c",label="error"];
+}

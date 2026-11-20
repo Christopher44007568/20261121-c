@@ -1,0 +1,11 @@
+digraph "shadow" {
+  rankdir=LR;
+  node [fontname="monospace"];
+  p0 [label="#1 shadow_receiver\nR:shadow_map W:lit_scene",shape=box,style="filled",fillcolor="#dbeafe"];
+  p1 [label="#0 shadow_caster\nW:shadow_map",shape=box,style="filled",fillcolor="#dbeafe"];
+  r0 [label="shadow_map\nR32_SFLOAT",shape=ellipse,style="filled",fillcolor="#fef3c7"];
+  r1 [label="lit_scene\nRGBA16_SFLOAT",shape=ellipse,style="filled",fillcolor="#fef3c7"];
+  p0 -> r1 [label="write"];
+  r0 -> p0 [label="read"];
+  p1 -> r0 [label="write"];
+}

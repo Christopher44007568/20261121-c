@@ -1,0 +1,16 @@
+digraph "postprocess" {
+  rankdir=LR;
+  node [fontname="monospace"];
+  p0 [label="#2 tonemap\nR:hdr_scene R:bloom_half W:ldr_frame",shape=box,style="filled",fillcolor="#dbeafe"];
+  p1 [label="#1 bloom_extract\nR:hdr_scene W:bloom_half",shape=box,style="filled",fillcolor="#dbeafe"];
+  p2 [label="#0 scene_lighting\nW:hdr_scene",shape=box,style="filled",fillcolor="#dbeafe"];
+  r0 [label="hdr_scene\nRGBA16_SFLOAT",shape=ellipse,style="filled",fillcolor="#fef3c7"];
+  r1 [label="bloom_half\nRGBA16_SFLOAT",shape=ellipse,style="filled",fillcolor="#fef3c7"];
+  r2 [label="ldr_frame\nRGBA8_UNORM",shape=ellipse,style="filled",fillcolor="#fef3c7"];
+  p0 -> r2 [label="write"];
+  r0 -> p0 [label="read"];
+  r1 -> p0 [label="read"];
+  p1 -> r1 [label="write"];
+  r0 -> p1 [label="read"];
+  p2 -> r0 [label="write"];
+}

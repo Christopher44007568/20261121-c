@@ -1,0 +1,24 @@
+digraph "screenshot" {
+  rankdir=LR;
+  node [fontname="monospace"];
+  p0 [label="#4 screenshot_copy\nR:ldr_frame W:screenshot_bytes",shape=box,style="filled",fillcolor="#dbeafe"];
+  p1 [label="#3 tonemap\nR:hdr_scene R:bloom_half W:ldr_frame",shape=box,style="filled",fillcolor="#dbeafe"];
+  p2 [label="#2 bloom_extract\nR:hdr_scene W:bloom_half",shape=box,style="filled",fillcolor="#dbeafe"];
+  p3 [label="#1 shadow_receiver\nR:shadow_map W:hdr_scene",shape=box,style="filled",fillcolor="#dbeafe"];
+  p4 [label="#0 shadow_caster\nW:shadow_map",shape=box,style="filled",fillcolor="#dbeafe"];
+  r0 [label="shadow_map\nR32_SFLOAT",shape=ellipse,style="filled",fillcolor="#fef3c7"];
+  r1 [label="hdr_scene\nRGBA16_SFLOAT",shape=ellipse,style="filled",fillcolor="#fef3c7"];
+  r2 [label="bloom_half\nRGBA16_SFLOAT",shape=ellipse,style="filled",fillcolor="#fef3c7"];
+  r3 [label="ldr_frame\nRGBA8_UNORM",shape=ellipse,style="filled",fillcolor="#fef3c7"];
+  r4 [label="screenshot_bytes\nbuffer",shape=ellipse,style="filled",fillcolor="#dcfce7"];
+  p0 -> r4 [label="write"];
+  r3 -> p0 [label="read"];
+  p1 -> r3 [label="write"];
+  r1 -> p1 [label="read"];
+  r2 -> p1 [label="read"];
+  p2 -> r2 [label="write"];
+  r1 -> p2 [label="read"];
+  p3 -> r1 [label="write"];
+  r0 -> p3 [label="read"];
+  p4 -> r0 [label="write"];
+}

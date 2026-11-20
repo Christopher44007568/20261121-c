@@ -1,0 +1,17 @@
+flowchart LR
+  classDef pass fill:#dbeafe,stroke:#1d4ed8,color:#111827
+  classDef resource fill:#fef3c7,stroke:#b45309,color:#111827
+  classDef imported fill:#dcfce7,stroke:#15803d,color:#111827
+  classDef error fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
+  P0["#2 tonemap<br/>R:hdr_scene R:bloom_half W:ldr_frame"]:::pass
+  P1["#1 bloom_extract<br/>R:hdr_scene W:bloom_half"]:::pass
+  P2["#0 scene_lighting<br/>W:hdr_scene"]:::pass
+  R0(["hdr_scene<br/>RGBA16_SFLOAT 640x360"]):::resource
+  R1(["bloom_half<br/>RGBA16_SFLOAT 320x180"]):::resource
+  R2(["ldr_frame<br/>RGBA8_UNORM 640x360"]):::resource
+  P0 -->|write| R2
+  R0 -->|read| P0
+  R1 -->|read| P0
+  P1 -->|write| R1
+  R0 -->|read| P1
+  P2 -->|write| R0

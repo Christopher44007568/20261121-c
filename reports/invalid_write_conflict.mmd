@@ -1,0 +1,12 @@
+flowchart LR
+  classDef pass fill:#dbeafe,stroke:#1d4ed8,color:#111827
+  classDef resource fill:#fef3c7,stroke:#b45309,color:#111827
+  classDef imported fill:#dcfce7,stroke:#15803d,color:#111827
+  classDef error fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
+  P0["#? first_writer<br/>W:target"]:::pass
+  P1["#? second_writer<br/>W:target"]:::pass
+  R0(["target<br/>RGBA8_UNORM 64x64"]):::resource
+  P0 -->|write| R0
+  P1 -->|write| R0
+  E0["multiple-writers<br/>write/write conflict: pass 'second_writer' and pass 'first_writer' both write 'target'; render graph resources are single-assignment"]:::error
+  E0 -.-> P1

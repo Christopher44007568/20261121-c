@@ -1,0 +1,25 @@
+flowchart LR
+  classDef pass fill:#dbeafe,stroke:#1d4ed8,color:#111827
+  classDef resource fill:#fef3c7,stroke:#b45309,color:#111827
+  classDef imported fill:#dcfce7,stroke:#15803d,color:#111827
+  classDef error fill:#fee2e2,stroke:#b91c1c,color:#7f1d1d
+  P0["#4 screenshot_copy<br/>R:ldr_frame W:screenshot_bytes"]:::pass
+  P1["#3 tonemap<br/>R:hdr_scene R:bloom_half W:ldr_frame"]:::pass
+  P2["#2 bloom_extract<br/>R:hdr_scene W:bloom_half"]:::pass
+  P3["#1 shadow_receiver<br/>R:shadow_map W:hdr_scene"]:::pass
+  P4["#0 shadow_caster<br/>W:shadow_map"]:::pass
+  R0(["shadow_map<br/>R32_SFLOAT 640x360"]):::resource
+  R1(["hdr_scene<br/>RGBA16_SFLOAT 640x360"]):::resource
+  R2(["bloom_half<br/>RGBA16_SFLOAT 320x180"]):::resource
+  R3(["ldr_frame<br/>RGBA8_UNORM 640x360"]):::resource
+  R4(["screenshot_bytes<br/>buffer"]):::imported
+  P0 -->|write| R4
+  R3 -->|read| P0
+  P1 -->|write| R3
+  R1 -->|read| P1
+  R2 -->|read| P1
+  P2 -->|write| R2
+  R1 -->|read| P2
+  P3 -->|write| R1
+  R0 -->|read| P3
+  P4 -->|write| R0

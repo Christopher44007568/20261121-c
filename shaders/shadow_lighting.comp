@@ -1,0 +1,27 @@
+#version 450
+
+layout(local_size_x = 8, local_size_y = 8) in;
+layout(set = 0, binding = 0, r32f) uniform image2D shadow_map;
+layout(set = 0, binding = 2, rgba16f) uniform image2D color_output;
+
+layout(push_constant) uniform PushConstants {
+    uvec4 dimensions;
+} pc;
+
+void main() {
+    ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 size = ivec2(pc.dimensions.xy);
+    if (any(greaterThanEqual(pixel, size))) {
+        return;
+    }
+
+    vec2 uv = (vec2(pixel) + 0.5) / vec2(size);
+    float visibility = imageLoad(shadow_map, pixel).r;
+    vec3 sky = mix(vec3(0.08, 0.14, 0.25), vec3(0.55, 0.72, 0.95), uv.y);
+    vec3 albedo = mix(vec3(0.92, 0.72, 0.48), vec3(0.30, 0.55, 0.34),
+                      smoothstep(0.43, 0.48, uv.y));
+    vec3 light = vec3(1.0, 0.78, 0.52) * (2.5 * visibility);
+    float sun = exp(-35.0 * length(uv - vec2(0.72, 0.30)));
+    vec3 color = sky + albedo * light + vec3(4.0, 2.5, 1.2) * sun;
+    imageStore(color_output, pixel, vec4(color, 1.0));
+}

@@ -1,0 +1,2 @@
+/usr/bin/ar qc librender_graph.a CMakeFiles/render_graph.dir/src/render_graph.cpp.o CMakeFiles/render_graph.dir/src/paths.cpp.o CMakeFiles/render_graph.dir/src/vulkan_runtime.cpp.o
+/usr/bin/ranlib librender_graph.a

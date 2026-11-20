@@ -1,0 +1,26 @@
+#version 450
+
+layout(local_size_x = 8, local_size_y = 8) in;
+layout(set = 0, binding = 2, r32f) uniform image2D shadow_output;
+
+layout(push_constant) uniform PushConstants {
+    uvec4 dimensions;
+} pc;
+
+void main() {
+    ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 size = ivec2(pc.dimensions.xy);
+    if (any(greaterThanEqual(pixel, size))) {
+        return;
+    }
+
+    vec2 uv = (vec2(pixel) + 0.5) / vec2(size);
+    vec2 light_uv = vec2(0.62, 0.72);
+    float distance_to_light = length(uv - light_uv);
+    float radial = smoothstep(0.52, 0.10, distance_to_light);
+
+    vec2 bars = vec2(0.33) - abs(fract(uv * 9.0) - 0.5);
+    float occluder = step(0.028, min(bars.x, bars.y));
+    float shadow = clamp(radial * (0.25 + 0.75 * occluder), 0.0, 1.0);
+    imageStore(shadow_output, pixel, vec4(shadow, 0.0, 0.0, 0.0));
+}

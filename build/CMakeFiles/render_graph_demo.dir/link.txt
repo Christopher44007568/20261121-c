@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/render_graph_demo.dir/link.d CMakeFiles/render_graph_demo.dir/src/main.cpp.o -o render_graph_demo  librender_graph.a -ldl

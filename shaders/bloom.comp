@@ -1,0 +1,30 @@
+#version 450
+
+layout(local_size_x = 8, local_size_y = 8) in;
+layout(set = 0, binding = 0, rgba16f) uniform image2D scene_input;
+layout(set = 0, binding = 2, rgba16f) uniform image2D bloom_output;
+
+layout(push_constant) uniform PushConstants {
+    uvec4 dimensions;
+} pc;
+
+void main() {
+    ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 size = ivec2(pc.dimensions.xy);
+    if (any(greaterThanEqual(pixel, size))) {
+        return;
+    }
+
+    ivec2 source_size = ivec2(pc.dimensions.zw);
+    ivec2 source_pixel = min(pixel * 2, source_size - 1);
+    vec3 sum = vec3(0.0);
+    for (int y = 0; y < 2; ++y) {
+        for (int x = 0; x < 2; ++x) {
+            ivec2 sample_pixel = min(source_pixel + ivec2(x, y), source_size - 1);
+            sum += imageLoad(scene_input, sample_pixel).rgb;
+        }
+    }
+    vec3 color = sum * 0.25;
+    vec3 bright = max(color - vec3(1.0), vec3(0.0));
+    imageStore(bloom_output, pixel, vec4(bright, 1.0));
+}
