@@ -1,0 +1,22 @@
+{
+  "name": "stroke-to-path-preview",
+  "version": "1.0.0",
+  "description": "Editable SVG stroke-to-path expander with browser reference diffing",
+  "main": "src/stroke-to-path.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "node scripts/build-browser.js",
+    "test": "node test/run-tests.js",
+    "ref": "node test/make-reference.js",
+    "diff": "node test/diff-report.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "pngjs": "^7.0.0",
+    "playwright": "^1.49.0"
+  }
+}
