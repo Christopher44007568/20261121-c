@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QEM LOD 浏览视图</title>
+<style>
+  body { margin:0; font-family: system-ui, sans-serif; background:#12141a;
+         color:#e6e8ee; display:flex; flex-direction:column; height:100vh; }
+  header { padding:10px 16px; background:#1b1e27; display:flex; gap:18px;
+           align-items:center; flex-wrap:wrap; }
+  h1 { font-size:16px; margin:0; font-weight:600; }
+  label { font-size:13px; display:flex; gap:6px; align-items:center; }
+  select, button { background:#262b38; color:#e6e8ee; border:1px solid #3a4152;
+           border-radius:6px; padding:5px 10px; font-size:13px; }
+  #gl { flex:1; width:100%; display:block; }
+  #stats { font-size:12px; color:#9aa3b5; margin-left:auto; }
+  .hint { font-size:12px; color:#7d8698; }
+  .legend span { padding:2px 8px; border-radius:4px; margin-right:8px;
+           font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>约束 QEM 简化器 · LOD 浏览</h1>
+  <label>级别
+    <select id="lod"></select>
+  </label>
+  <label><input type="checkbox" id="wire"> 线框</label>
+  <label><input type="checkbox" id="cons" checked> 约束边</label>
+  <span class="legend">
+    <span style="background:#e6b83a;color:#222">材质硬边</span>
+    <span style="background:#4dd9ff;color:#222">边界边</span>
+  </span>
+  <span id="stats"></span>
+</header>
+<canvas id="gl"></canvas>
+<span class="hint" style="padding:6px 16px">
+  鼠标拖拽旋转 · 滚轮缩放 · 黄线为材质/零件硬边，青线为边界边
+</span>
+<script src="viewer.js"></script>
+<script>
+function loadManifest(cb) {
+  fetch("manifest.json").then(r => r.json()).then(cb).catch(() => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "manifest.json", false);
+    xhr.send(null);
+    cb(JSON.parse(xhr.responseText));
+  });
+}
+loadManifest(d => {
+  const sel = document.getElementById("lod");
+  d.levels.forEach(l => {
+    const opt = document.createElement("option");
+    opt.value = l.obj.split("/").pop();
+    opt.textContent = `L${l.level} · ${l.report.faces} 面`;
+    sel.appendChild(opt);
+  });
+  const params = new URLSearchParams(location.search);
+  if (params.get("lod")) sel.selectedIndex = Math.min(
+    Number(params.get("lod")), d.levels.length - 1);
+  if (params.get("wire")) document.getElementById("wire").checked = true;
+});
+</script>
+</body>
+</html>
