@@ -1,0 +1,3 @@
+/home/hj/userfeedback2/uid5-0026/build/CMakeFiles/scanner.dir
+/home/hj/userfeedback2/uid5-0026/build/CMakeFiles/edit_cache.dir
+/home/hj/userfeedback2/uid5-0026/build/CMakeFiles/rebuild_cache.dir
