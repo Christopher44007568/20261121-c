@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/gl_smoke.dir/link.d CMakeFiles/gl_smoke.dir/src/smoke_main.cpp.o CMakeFiles/gl_smoke.dir/src/glmin.cpp.o CMakeFiles/gl_smoke.dir/src/gl_context.cpp.o -o gl_smoke  -l:libEGL.so.1 -ldl
