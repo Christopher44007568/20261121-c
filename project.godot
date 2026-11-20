@@ -1,0 +1,46 @@
+; Animated-bound crowd demo. Godot 4.4+.
+config_version=5
+
+[application]
+
+config/name="Animated-Bound Crowd"
+config/description="GPU-skinned crowd with animation-conservative frustum culling."
+run/main_scene="res://scenes/main.tscn"
+
+[display]
+
+window/size/viewport_width=1600
+window/size/viewport_height=900
+window/size/window_width_override=1600
+window/size/window_height_override=900
+window/stretch/mode="canvas_items"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+environment/defaults/default_clear_color=Color(0.012, 0.018, 0.035, 1)
+
+[input]
+
+toggle_pause={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":32)]
+}
+toggle_bounds={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":66)]
+}
+toggle_reference={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":82)]
+}
+toggle_sweep={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":67)]
+}
+
+[layer_names]
+
+3d_physics/layer_1="crowd"
