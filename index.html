@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b0f10" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230b0f10'/><path d='M16 5l11 11-11 11L5 16z' fill='%2361f3c7'/><path d='M16 11l5 5-5 5-5-5z' fill='%230b0f10'/></svg>" />
+    <title>SPECTRA — Assembly Inspector</title>
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </span>
+          <span class="brand-name">SPECTRA</span>
+          <span class="brand-divider"></span>
+          <span class="brand-sub">ASSEMBLY INSPECTOR</span>
+        </div>
+
+        <div class="topbar-context">
+          <span class="context-eyebrow">SERIES 07 / GEARBOX</span>
+          <span class="context-title">Transmission housing</span>
+        </div>
+
+        <div class="topbar-metrics">
+          <span class="metric-chip"><i class="live-dot"></i> WEBGL2</span>
+          <span class="metric-chip" id="dprChip">DPR 1.0</span>
+          <span class="metric-chip muted" id="bufferChip">0 × 0</span>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="side-panel left-panel" aria-label="Selection rules">
+          <section class="panel-section intro-section">
+            <p class="eyebrow">PICK PIPELINE</p>
+            <h1>Visible ID selection</h1>
+            <p class="body-copy">
+              A dedicated 24-bit object-ID pass resolves only the fragments that survive
+              depth and cutout tests.
+            </p>
+          </section>
+
+          <section class="panel-section">
+            <div class="section-heading">
+              <span>SELECTION RULES</span>
+              <span class="tag">LIVE</span>
+            </div>
+            <ul class="rule-list">
+              <li class="rule-item">
+                <span class="rule-icon depth-icon" aria-hidden="true"></span>
+                <span class="rule-copy">
+                  <strong>Occlusion respected</strong>
+                  <small>Nearest depth fragment owns the ID</small>
+                </span>
+                <span class="rule-state">ON</span>
+              </li>
+              <li class="rule-item">
+                <span class="rule-icon cutout-icon" aria-hidden="true"></span>
+                <span class="rule-copy">
+                  <strong>Alpha cutout</strong>
+                  <small>Discard below the 0.50 threshold</small>
+                </span>
+                <span class="rule-state">0.50</span>
+              </li>
+              <li class="rule-item">
+                <span class="rule-icon display-icon" aria-hidden="true"></span>
+                <span class="rule-copy">
+                  <strong>Display layers</strong>
+                  <small>Glass is excluded and never occludes</small>
+                </span>
+                <span class="rule-state pass">PASS</span>
+              </li>
+            </ul>
+          </section>
+
+          <section class="panel-section layers-section">
+            <div class="section-heading">
+              <span>SCENE LAYERS</span>
+              <span class="tag" id="pickableCount">0 IDs</span>
+            </div>
+            <ul class="layer-list">
+              <li><span class="swatch structural"></span><span>Structural parts</span><b id="structuralCount">0</b></li>
+              <li><span class="swatch fastener"></span><span>Instanced fasteners</span><b id="fastenerCount">0</b></li>
+              <li><span class="swatch thermal"></span><span>Instanced heat fins</span><b id="finCount">0</b></li>
+              <li><span class="swatch bearing"></span><span>Instanced rollers</span><b id="rollerCount">0</b></li>
+              <li><span class="swatch cutout"></span><span>Perforated grille</span><b>CUTOUT</b></li>
+              <li class="is-display"><span class="swatch display"></span><span>Inspection glass</span><b>DISPLAY</b></li>
+            </ul>
+          </section>
+
+          <section class="panel-section controls-section">
+            <div class="section-heading"><span>VIEW</span></div>
+            <div class="view-buttons">
+              <button class="ghost-button" id="resetViewButton" type="button">ISO</button>
+              <button class="ghost-button" id="frontViewButton" type="button">FRONT</button>
+              <button class="ghost-button" id="topViewButton" type="button">TOP</button>
+            </div>
+          </section>
+
+          <div class="panel-footnote">
+            <span class="shortcut">DRAG</span>
+            <span>Box select</span>
+            <span class="shortcut">RMB</span>
+            <span>Orbit</span>
+            <span class="shortcut">SCROLL</span>
+            <span>Zoom</span>
+          </div>
+        </aside>
+
+        <section class="stage" id="stage" aria-label="3D model viewport">
+          <div class="stage-vignette" aria-hidden="true"></div>
+          <div class="stage-grid" aria-hidden="true"></div>
+          <div class="viewport-label top-left">
+            <span class="crosshair-mark"></span>
+            <span>ID_PASS / VISIBLE FRAGMENTS</span>
+          </div>
+          <div class="viewport-label top-right">
+            <span id="cameraReadout">CAMERA —</span>
+          </div>
+
+          <div class="selection-box" id="selectionBox" aria-hidden="true">
+            <span class="corner tl"></span>
+            <span class="corner tr"></span>
+            <span class="corner bl"></span>
+            <span class="corner br"></span>
+            <span class="box-label" id="boxLabel">0 × 0</span>
+          </div>
+
+          <div class="drag-prompt" id="dragPrompt">
+            <span class="prompt-graphic" aria-hidden="true"><i></i><i></i></span>
+            <span><b>Drag a rectangle</b> to select visible fragments</span>
+          </div>
+
+          <div class="stage-toast" id="stageToast" role="status"></div>
+
+          <div class="viewport-footer">
+            <div class="coordinate-readout">
+              <span>X <b id="cursorX">—</b></span>
+              <span>Y <b id="cursorY">—</b></span>
+              <span>READ <b id="readMode">SYNC</b></span>
+            </div>
+            <div class="scale-readout">
+              <span class="scale-line"></span>
+              <span>100 mm</span>
+            </div>
+          </div>
+        </section>
+
+        <aside class="side-panel right-panel" aria-label="Selection audit">
+          <section class="panel-section selection-summary">
+            <div class="section-heading">
+              <span>SELECTION AUDIT</span>
+              <span class="status-pill idle" id="selectionStatus">IDLE</span>
+            </div>
+            <div class="summary-empty" id="summaryEmpty">
+              <span class="empty-orbit" aria-hidden="true"></span>
+              <strong>No region selected</strong>
+              <p>Drag over the assembly. Every returned ID is checked against the live pick registry.</p>
+            </div>
+            <div class="summary-result is-hidden" id="summaryResult">
+              <div class="summary-number">
+                <strong id="hitCount">0</strong>
+                <span>PARTS HIT</span>
+              </div>
+              <div class="summary-meta">
+                <span><b id="pixelCount">0</b> visible px</span>
+                <span><b id="readLatency">0.0</b> ms read</span>
+              </div>
+              <div class="summary-progress"><i id="auditProgress"></i></div>
+              <p class="audit-line" id="auditLine">Waiting for an ID pass.</p>
+            </div>
+          </section>
+
+          <section class="panel-section hits-section is-collapsed" id="hitsSection">
+            <div class="section-heading">
+              <span>HIT MANIFEST</span>
+              <span class="tag" id="hitManifestTag">0 VERIFIED</span>
+            </div>
+            <div class="hit-list" id="hitList"></div>
+          </section>
+
+          <section class="panel-section guard-section">
+            <div class="section-heading">
+              <span>READBACK GUARD</span>
+              <span class="tag" id="guardTag">ARMED</span>
+            </div>
+            <div class="guard-grid">
+              <div><span>STATE EPOCH</span><b id="epochValue">0000</b></div>
+              <div><span>REQUEST SEQ</span><b id="requestValue">0000</b></div>
+              <div><span>STALE DROPS</span><b id="staleValue">0</b></div>
+            </div>
+            <p class="guard-copy" id="guardCopy">
+              Camera, viewport, and model revisions invalidate in-flight readbacks.
+            </p>
+            <button class="audit-test-button" id="staleTestButton" type="button">
+              <span class="test-pulse"></span>
+              Run stale-readback probe
+            </button>
+          </section>
+
+          <section class="panel-section actions-section">
+            <div class="section-heading">
+              <span>ACTION HISTORY</span>
+              <span class="tag" id="actionCount">0</span>
+            </div>
+            <div class="action-list" id="actionList">
+              <p class="empty-note">Selections become replayable actions.</p>
+            </div>
+          </section>
+        </aside>
+      </main>
+
+      <footer class="toolbar">
+        <div class="tool-group">
+          <button class="tool-button is-active" id="selectTool" type="button" title="Box select (B)">
+            <span class="tool-icon box-tool"></span>
+            <span>BOX SELECT</span>
+            <kbd>B</kbd>
+          </button>
+          <button class="tool-button" id="orbitTool" type="button" title="Orbit (O)">
+            <span class="tool-icon orbit-tool"></span>
+            <span>ORBIT</span>
+            <kbd>O</kbd>
+          </button>
+        </div>
+        <div class="toolbar-hint">
+          <span class="pulse-dot"></span>
+          <span id="toolHint">Drag to select visible fragments · right-drag to orbit</span>
+        </div>
+        <div class="tool-group right">
+          <button class="text-button" id="clearButton" type="button">CLEAR <kbd>ESC</kbd></button>
+          <button class="text-button" id="replayButton" type="button" disabled>REPLAY LAST</button>
+          <button class="primary-button" id="exportButton" type="button" disabled>
+            <span class="download-icon"></span>
+            EXPORT AUDIT
+          </button>
+        </div>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
