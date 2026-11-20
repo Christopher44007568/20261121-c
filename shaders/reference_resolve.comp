@@ -1,0 +1,82 @@
+#version 430 core
+
+layout(local_size_x = 8, local_size_y = 8) in;
+
+layout(r32ui, binding = 0) uniform readonly uimage2D uHeads;
+layout(rgba16f, binding = 1) uniform writeonly image2D uOutput;
+
+layout(std430, binding = 1) buffer FragmentCounter {
+    uint count;
+    uint overflow;
+};
+
+struct PackedNode {
+    uvec4 data;
+};
+
+layout(std430, binding = 2) readonly buffer FragmentNodes {
+    PackedNode nodes[];
+};
+
+uniform vec2 uResolution;
+uniform uint uNodeCapacity;
+
+const int MAX_FRAGMENTS = 96;
+
+vec3 background(vec2 uv) {
+    float horizon = smoothstep(0.0, 1.0, uv.y);
+    vec3 low = vec3(0.012, 0.020, 0.034);
+    vec3 high = vec3(0.045, 0.070, 0.105);
+    vec3 color = mix(low, high, horizon);
+    vec2 d = uv - vec2(0.5, 0.44);
+    color += vec3(0.020, 0.045, 0.060) * exp(-5.5 * dot(d, d));
+    float grid = step(0.985, fract(uv.x * 24.0)) + step(0.985, fract(uv.y * 16.0));
+    return color - grid * 0.006;
+}
+
+void main() {
+    ivec2 pixel = ivec2(gl_GlobalInvocationID.xy);
+    vec2 resolution = vec2(imageSize(uOutput));
+    if (pixel.x >= int(resolution.x) || pixel.y >= int(resolution.y)) return;
+
+    float depths[MAX_FRAGMENTS];
+    vec4 colors[MAX_FRAGMENTS];
+    int fragmentCount = 0;
+    uint nodeIndex = imageLoad(uHeads, pixel).x;
+
+    while (nodeIndex != 0u && fragmentCount < MAX_FRAGMENTS) {
+        if (nodeIndex - 1u >= uNodeCapacity) break;
+        PackedNode node = nodes[nodeIndex - 1u];
+        vec2 rg = unpackHalf2x16(node.data.x);
+        vec2 ba = unpackHalf2x16(node.data.y);
+        depths[fragmentCount] = uintBitsToFloat(node.data.z);
+        colors[fragmentCount] = vec4(rg, ba);
+        nodeIndex = node.data.w;
+        ++fragmentCount;
+    }
+    if (nodeIndex != 0u) atomicAdd(overflow, 1u);
+
+    for (int i = 1; i < fragmentCount; ++i) {
+        float keyDepth = depths[i];
+        vec4 keyColor = colors[i];
+        int j = i - 1;
+        while (j >= 0 && depths[j] > keyDepth) {
+            depths[j + 1] = depths[j];
+            colors[j + 1] = colors[j];
+            --j;
+        }
+        depths[j + 1] = keyDepth;
+        colors[j + 1] = keyColor;
+    }
+
+    vec2 uv = (vec2(pixel) + 0.5) / resolution;
+    vec3 color = background(uv);
+    float transmittance = 1.0;
+    for (int i = 0; i < fragmentCount; ++i) {
+        float alpha = clamp(colors[i].a, 0.0, 1.0);
+        color = color * (1.0 - alpha) + colors[i].rgb * alpha;
+        transmittance *= 1.0 - alpha;
+        if (transmittance < 1.0e-5) break;
+    }
+    imageStore(uOutput, pixel, vec4(color, 1.0));
+}
