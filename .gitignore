@@ -1,0 +1,8 @@
+build/
+reference/ssr_ref
+reference/ssr_asan
+reference/ssr_dbg
+reference/test_no_stale
+*.o
+*.obj
+.vs/
