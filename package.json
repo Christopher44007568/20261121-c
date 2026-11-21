@@ -1,0 +1,16 @@
+{
+  "name": "conifer-projection-lod",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "GPU-instanced conifer forest with screen-size LOD and reverse-walk stability checks",
+  "scripts": {
+    "test:math": "node scripts/test-math.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "reverse": "node scripts/reverse-walk.mjs",
+    "cruise": "node scripts/cruise.mjs"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.18.1"
+  }
+}

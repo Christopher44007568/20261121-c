@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>针叶林 · 投影 LOD · GPU 实例化</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1l4 6h-2.5l3 4h-9l3-4H4z' fill='%238fae6a'/%3E%3Crect x='7.2' y='11' width='1.6' height='4' fill='%234a3526'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="rule"></span>
+    <span class="kicker">GPU INSTANCE STUDY · UID 0025</span>
+  </div>
+  <h1>针叶林 <em>投影 LOD</em></h1>
+  <button id="holdBtn" class="hold" type="button"><span class="dot"></span><span class="hold-label">自动 / RUN</span></button>
+</header>
+
+<section class="panel telemetry" aria-label="帧遥测">
+  <div class="panel-head">
+    <span>FRAME TELEMETRY</span>
+    <span id="frameNo">#00000</span>
+  </div>
+
+  <div class="metric coverage">
+    <div class="metric-label">
+      <span>轮廓覆盖率</span>
+      <span class="tag">SAME FRAME / SCREEN</span>
+    </div>
+    <div class="coverage-row">
+      <span id="coverageVal" class="big">--.-</span><span class="pct">%</span>
+      <span id="coverageSrc" class="src">SAME FRAME</span>
+    </div>
+    <div class="coverage-bar">
+      <span id="barMesh" class="seg seg-mesh"></span>
+      <span id="barProxy" class="seg seg-proxy"></span>
+    </div>
+    <div class="legend">
+      <span><i class="dot mesh"></i>近景网格 <b id="meshCoverage">0.0%</b></span>
+      <span><i class="dot proxy"></i>远景代理 <b id="proxyCoverage">0.0%</b></span>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="metric">
+      <div class="metric-label"><span>主通道三角数</span></div>
+      <div class="value"><span id="triCount">0</span><small> tri</small></div>
+    </div>
+    <div class="metric">
+      <div class="metric-label"><span>过渡中实例</span></div>
+      <div class="value"><span id="fadeCount">0</span></div>
+    </div>
+    <div class="metric">
+      <div class="metric-label"><span>近景网格实例</span></div>
+      <div class="value"><span id="meshInstances">0</span></div>
+    </div>
+    <div class="metric">
+      <div class="metric-label"><span>远景代理实例</span></div>
+      <div class="value"><span id="proxyInstances">0</span></div>
+    </div>
+  </div>
+
+  <div class="band">
+    <div class="metric-label">
+      <span>屏幕投影 LOD 过渡带</span>
+      <span id="bandRange" class="tag">-- – -- px</span>
+    </div>
+    <div class="band-track">
+      <span id="bandZone" class="band-zone"></span>
+      <i id="bandCursor" class="band-cursor"></i>
+    </div>
+  </div>
+</section>
+
+<section class="panel verify" aria-label="逆向复走验证">
+  <div class="panel-head">
+    <span>REVERSE TRAVERSAL</span>
+    <span id="verifyBadge" class="badge">--</span>
+  </div>
+  <h2>逆向复走 · 阈值稳定性</h2>
+  <div class="verify-pos">z <span id="verifyZ">--</span> m</div>
+  <dl class="verify-list">
+    <dt>同点权重误差</dt><dd id="vWeightErr">--</dd>
+    <dt>双帧三角漂移</dt><dd id="vTriDrift">--</dd>
+    <dt>主导表示错配</dt><dd id="vRepMismatch">--</dd>
+    <dt>快速阈值反转</dt><dd id="vFlips">--</dd>
+    <dt>双跨采样站</dt><dd id="vStations">--</dd>
+  </dl>
+  <p id="verifyNote" class="verify-note">等待运行逆向验证…</p>
+  <button id="rerunVerify" class="btn" type="button">重新运行逆向验证</button>
+</section>
+
+<footer class="dock">
+  <div class="dock-group mode">
+    <button class="btn mode-btn active" data-mode="auto" type="button">自动 LOD</button>
+    <button class="btn mode-btn" data-mode="mesh" type="button">仅网格</button>
+    <button class="btn mode-btn" data-mode="proxy" type="button">仅代理</button>
+  </div>
+  <div class="dock-group walk">
+    <button id="revBtn" class="btn" type="button">← 逆向</button>
+    <button id="playBtn" class="btn primary" type="button">继续</button>
+    <button id="fwdBtn" class="btn" type="button">正向 →</button>
+  </div>
+  <div class="dock-hint" id="dockHint">沿坡连续下行 · 屏幕投影尺寸驱动 LOD</div>
+</footer>
+
+<script type="module" src="src/app.js"></script>
+</body>
+</html>
