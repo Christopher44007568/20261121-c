@@ -1,0 +1,14 @@
+{
+  "name": "coverage-screen-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "node tools/serve.mjs",
+    "test": "node tools/smoke.mjs",
+    "capture": "node tools/capture.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.1"
+  }
+}

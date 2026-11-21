@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Screen / Coverage Lab</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="identity">
+        <div class="mark" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div>
+          <h1>SCREEN / COVERAGE LAB</h1>
+          <p>穿孔金属板 · alpha test · coverage-aware mips</p>
+        </div>
+      </div>
+      <div class="runtime">
+        <span class="badge live"><i></i> WEBGL2 LIVE</span>
+        <span id="renderer-name" class="renderer-name">initializing…</span>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="stage" id="stage">
+        <canvas id="view" aria-label="3D perforated metal screen viewport"></canvas>
+        <div class="stage-hud top-left">
+          <span class="hud-kicker">CURRENT VIEW</span>
+          <strong id="hud-mode">ALPHA-TO-COVERAGE · 4× MSAA</strong>
+          <span id="hud-camera">d 4.0 · tilt 30°</span>
+        </div>
+        <div class="split-labels" id="split-labels" hidden>
+          <span>ALPHA PIPELINE</span>
+          <span>TRUE MESH</span>
+        </div>
+        <div class="stage-hud bottom-left">
+          <span><i class="swatch metal"></i>金属覆盖率</span>
+          <span><i class="swatch hole"></i>开孔</span>
+          <span id="contour-note" hidden><i class="swatch contour"></i>真实孔缘</span>
+        </div>
+        <div class="stage-hud bottom-right">
+          <span id="viewport-size">—</span>
+          <span id="frame-note">真实几何用于像素级对照</span>
+        </div>
+        <div class="scan-progress" id="scan-progress" hidden>
+          <div class="scan-progress-head">
+            <span id="scan-message">准备扫描…</span>
+            <b id="scan-percent">0%</b>
+          </div>
+          <div class="progress-track"><i id="progress-bar"></i></div>
+        </div>
+      </section>
+
+      <aside class="inspector">
+        <section class="panel metrics-panel">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">LIVE COMPARISON</span>
+              <h2>当前配置指标</h2>
+            </div>
+            <span class="tiny-tag" id="metric-source">未扫描</span>
+          </div>
+          <div class="metric-grid">
+            <div class="metric"><span>空洞占比</span><strong id="m-hole">—</strong><small>投影板面内</small></div>
+            <div class="metric"><span>几何误差</span><strong id="m-error">—</strong><small>相对真实网格</small></div>
+            <div class="metric"><span>闪烁 σ</span><strong id="m-flicker">—</strong><small>8 相位时序</small></div>
+            <div class="metric"><span>翻转率</span><strong id="m-toggle">—</strong><small>覆盖率变化 &gt; 0.5</small></div>
+            <div class="metric wide"><span>边缘 MAE</span><strong id="m-mae">—</strong><small>与 4× 几何参考的平均绝对差</small></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">VIEW MATRIX</span>
+              <h2>相机与倾角</h2>
+            </div>
+            <output id="camera-output">d 4.0 / 30°</output>
+          </div>
+          <label class="control">
+            <span>相机距离 <b id="distance-value">4.0</b></span>
+            <input id="distance" type="range" min="2.2" max="32" step="0.1" value="4.0">
+            <span class="range-ends"><i>近 · 2.2</i><i>远 · 32</i></span>
+          </label>
+          <label class="control">
+            <span>倾角 <b id="tilt-value">30°</b></span>
+            <input id="tilt" type="range" min="0" max="75" step="1" value="30">
+            <span class="range-ends"><i>正视</i><i>掠射</i></span>
+          </label>
+          <div class="segmented" id="mode-segments" aria-label="View mode">
+            <button data-mode="alpha" class="active">Alpha</button>
+            <button data-mode="split">Split</button>
+            <button data-mode="geometry">Geometry</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">PIPELINE</span>
+              <h2>采样与测试</h2>
+            </div>
+            <span class="tiny-tag" id="sample-tag">4×</span>
+          </div>
+          <div class="segmented three" id="alpha-segments" aria-label="Alpha mode">
+            <button data-alpha="0">Hard</button>
+            <button data-alpha="1">Bayer</button>
+            <button data-alpha="2" class="active">A2C</button>
+          </div>
+          <div class="segmented four" id="msaa-segments" aria-label="MSAA samples">
+            <button data-samples="0">1×</button>
+            <button data-samples="2">2×</button>
+            <button data-samples="4" class="active">4×</button>
+            <button data-samples="8">8×</button>
+          </div>
+          <label class="control compact">
+            <span>alpha threshold <b id="threshold-value">0.50</b></span>
+            <input id="threshold" type="range" min="0.25" max="0.75" step="0.01" value="0.5">
+          </label>
+          <label class="check-row">
+            <input id="contours" type="checkbox">
+            <span><b>真实孔缘叠线</b><small>用几何网格的圆孔边界验证 alpha 轮廓</small></span>
+          </label>
+          <label class="check-row">
+            <input id="debug-holes" type="checkbox">
+            <span><b>覆盖率假色</b><small>青色 = 开孔，亮色 = 金属</small></span>
+          </label>
+          <label class="control compact" id="split-control" hidden>
+            <span>分割位置 <b id="split-value">50%</b></span>
+            <input id="split" type="range" min="10" max="90" step="1" value="50">
+          </label>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">MIP OPEN COVERAGE</span>
+              <h2>开孔率保持</h2>
+            </div>
+            <span class="tiny-tag" id="mip-analytic">—</span>
+          </div>
+          <div class="mip-bars" id="mip-bars"></div>
+          <p class="panel-note">面积积分生成每一级 mip；数值应稳定在解析开孔率附近。</p>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">HARDWARE COST</span>
+              <h2>MSAA 测量</h2>
+            </div>
+            <span class="tiny-tag" id="timer-source">待测</span>
+          </div>
+          <div class="cost-chart" id="cost-chart">
+            <p class="empty-state">运行完整扫描后生成 1× / 2× / 4× / 8× 的帧时间与解析成本。</p>
+          </div>
+          <p class="panel-note" id="cost-note">计时包含场景绘制与 MSAA resolve；软件光栅环境会单独标记。</p>
+        </section>
+
+        <section class="panel summary-panel">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">SWEEP SUMMARY</span>
+              <h2>20 组距离 × 倾角</h2>
+            </div>
+          </div>
+          <div class="summary-table" id="summary-table">
+            <p class="empty-state">尚未扫描。将测量 5 组距离、4 组倾角与 4 条管线。</p>
+          </div>
+        </section>
+
+        <div class="actions">
+          <button id="run" class="primary"><span>运行完整扫描</span><small>5 distances × 4 tilts</small></button>
+          <button id="download" class="secondary" disabled>导出当前帧 PNG</button>
+        </div>
+        <div class="status-line">
+          <i id="status-dot"></i>
+          <span id="status">就绪</span>
+        </div>
+        <footer class="inspector-footer">
+          <span id="gpu-detail">—</span>
+          <span>threshold 0.50 · area-integrated mips</span>
+        </footer>
+      </aside>
+    </main>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
