@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="WebGPU time-dependent 2D vector field visualization using streamline sampling and previous-frame texture transport."
+    />
+    <title>Flux Lab — WebGPU Vector Transport</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23081016'/%3E%3Cpath d='M5 22c6-13 9 5 15-4s5-3 7-6' fill='none' stroke='%235cf5dc' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 34 34" role="img">
+              <path d="M4 23c6-15 10 7 16-5s7-4 10-8" />
+              <path class="brand-mark-thin" d="M4 28c8-9 12 4 18-5s5-7 8-10" />
+              <circle cx="27" cy="10" r="2.6" />
+            </svg>
+          </span>
+          <span class="brand-copy">
+            <strong>FLUX / LAB</strong>
+            <small>GPU FIELD INSTRUMENT</small>
+          </span>
+        </div>
+        <div class="top-title">
+          <span>VORTEX + BOUNDARY FLOW</span>
+          <small>analytic · 2D · time dependent</small>
+        </div>
+        <div class="system-status" id="system-status">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="gpu-status">WEBGPU · INITIALIZING</span>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="stage" id="stage" aria-label="Vector field viewport">
+          <canvas id="gpu-canvas"></canvas>
+
+          <div class="stage-overlay" aria-hidden="true">
+            <div class="stage-topline">
+              <div class="chip-row">
+                <span class="chip chip-live"><i></i><span id="live-label">LIVE TRANSPORT</span></span>
+                <span class="chip">RK2 STREAMLINE</span>
+                <span class="chip">PING–PONG RGBA16F</span>
+                <span class="chip chip-check" id="verification-chip">CHECKS · WAIT</span>
+              </div>
+              <span class="probe-hint">MOVE TO PROBE <b>+</b></span>
+            </div>
+
+            <div class="boundary boundary-inlet"><span>← INLET</span><i></i></div>
+            <div class="boundary boundary-outlet"><i></i><span>OUTLET →</span></div>
+
+            <div class="field-annotation annotation-vortex">
+              <span class="annotation-dot"></span>
+              <div><b>CCW VORTEX</b><small>Γ &gt; 0 · converging core</small></div>
+            </div>
+            <div class="field-annotation annotation-obstacle">
+              <span class="annotation-line"></span>
+              <div><b>SOLID MASK</b><small>u = 0</small></div>
+            </div>
+            <div class="field-annotation annotation-gap">
+              <span class="annotation-line"></span>
+              <div><b>LOCAL GAP</b><small>no samples</small></div>
+            </div>
+
+            <div class="probe-card" id="probe-card">
+              <div class="probe-head"><span>PROBE</span><b id="probe-coords">x −0.55 / y +0.18</b></div>
+              <div class="probe-main">
+                <span class="probe-arrow" id="probe-arrow">→</span>
+                <div><b id="probe-speed">0.00</b><small>WORLD UNITS / S</small></div>
+              </div>
+              <div class="probe-vector" id="probe-vector">u +0.00&nbsp;&nbsp; v +0.00</div>
+            </div>
+
+            <div class="legend">
+              <span class="legend-title">DYE DENSITY</span>
+              <span class="legend-ramp"></span>
+              <span>0</span><span>1</span>
+            </div>
+            <div class="stage-footer">
+              <span><b id="resolution-readout">—</b> px</span>
+              <span><b id="frame-rate-readout">—</b> fps</span>
+              <span><b id="step-readout">0</b> transport steps</span>
+              <span>t = <b id="time-readout">0.000</b> s</span>
+            </div>
+          </div>
+
+          <div class="audit-banner" id="audit-banner" hidden>
+            <div>
+              <span class="audit-kicker">FRAME-RATE COMPARISON · SAME PHYSICAL TIME</span>
+              <strong id="audit-title">30 Hz vs 120 Hz</strong>
+            </div>
+            <div class="audit-readout">
+              <span>Δ<sub>mean</sub> <b id="audit-delta">—</b></span>
+              <span>changed <b id="audit-changed">—</b></span>
+              <button class="text-button" id="audit-exit">RETURN LIVE</button>
+            </div>
+          </div>
+          <div class="audit-panel-labels" id="audit-panel-labels" hidden aria-hidden="true">
+            <span><b>30 Hz</b><small>60 STEPS · t = 2.000 s</small></span>
+            <span><b>120 Hz</b><small>240 STEPS · t = 2.000 s</small></span>
+            <span><b>|A − B|</b><small>PIXEL INTENSITY DELTA</small></span>
+          </div>
+
+          <div class="loading-state" id="loading-state">
+            <span class="loading-ring"></span>
+            <strong>INITIALIZING WEBGPU</strong>
+            <small>allocating transport textures</small>
+          </div>
+
+          <div class="fallback-state" id="fallback-state" hidden>
+            <span class="fallback-icon">!</span>
+            <strong>WebGPU unavailable</strong>
+            <p id="fallback-copy">A CPU streamline preview is shown instead.</p>
+          </div>
+        </section>
+
+        <aside class="inspector" aria-label="Field controls and validation">
+          <section class="panel-section transport-section">
+            <div class="section-heading">
+              <span class="section-index">01</span>
+              <div><h2>Transport</h2><p>advect the last frame, never clear it</p></div>
+            </div>
+            <div class="transport-buttons">
+              <button class="primary-button" id="play-button" type="button">
+                <span class="play-icon" aria-hidden="true"></span>
+                <span id="play-label">PAUSE</span>
+              </button>
+              <button class="icon-button" id="step-button" type="button" title="Advance one transport step" aria-label="Advance one transport step">
+                <svg viewBox="0 0 20 20"><path d="M5 4l7 6-7 6V4zm9 0v12" /></svg>
+              </button>
+              <button class="icon-button" id="reset-button" type="button" title="Reset simulation and dye" aria-label="Reset simulation and dye">
+                <svg viewBox="0 0 20 20"><path d="M4 9a6 6 0 1 1 2 6.3M4 4v5h5" /></svg>
+              </button>
+            </div>
+            <div class="time-line">
+              <div><span>PHYSICAL CLOCK</span><b id="clock-readout">0.000 s</b></div>
+              <div class="clock-track"><i id="clock-progress"></i></div>
+            </div>
+            <label class="range-row" for="speed-range">
+              <span>TIME SCALE</span>
+              <input id="speed-range" type="range" min="0.15" max="2" value="0.65" step="0.05" />
+              <output id="speed-output">0.65×</output>
+            </label>
+            <div class="fps-control">
+              <span>TRANSPORT CADENCE</span>
+              <div class="segmented" id="fps-segmented" role="group" aria-label="Transport cadence">
+                <button data-fps="30" type="button">30</button>
+                <button data-fps="60" class="active" type="button">60</button>
+                <button data-fps="120" type="button">120</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel-section model-section">
+            <div class="section-heading">
+              <span class="section-index">02</span>
+              <div><h2>Analytic field</h2><p>uniform drift + Lamb–Oseen-like vortex</p></div>
+            </div>
+            <div class="formula-card">
+              <code>u(p,t) = U(t) + Γ(t) R<sub>90</sub>(p−c) / (|p−c|²+r<sub>c</sub>²) − λ(t)(p−c) / (|p−c|²+r<sub>c</sub>²)</code>
+              <div class="formula-meta">
+                <span><i class="swatch swatch-cyan"></i>UNIFORM <b>U<sub>x</sub> &gt; 0</b></span>
+                <span><i class="swatch swatch-coral"></i>ROTATION <b>Γ &gt; 0</b></span>
+                <span><i class="swatch swatch-violet"></i>CONVERGENCE <b>λ &gt; 0</b></span>
+              </div>
+            </div>
+            <div class="model-values">
+              <div><span>U(t)</span><b id="model-u">0.64, 0.00</b></div>
+              <div><span>c(t)</span><b id="model-c">−0.10, 0.12</b></div>
+              <div><span>Γ(t)</span><b id="model-gamma">0.34</b></div>
+              <div><span>λ(t)</span><b id="model-lambda">0.030</b></div>
+            </div>
+          </section>
+
+          <section class="panel-section layers-section">
+            <div class="section-heading">
+              <span class="section-index">03</span>
+              <div><h2>Layers & masks</h2><p>mutation is rejected per sample</p></div>
+            </div>
+            <div class="toggle-grid">
+              <label class="toggle-row">
+                <span><i class="layer-dot layer-dot-vector"></i>Velocity glyphs</span>
+                <input id="vectors-toggle" type="checkbox" checked />
+                <i class="switch" aria-hidden="true"></i>
+              </label>
+              <label class="toggle-row">
+                <span><i class="layer-dot layer-dot-obstacle"></i>Solid obstacle</span>
+                <input id="obstacle-toggle" type="checkbox" checked />
+                <i class="switch" aria-hidden="true"></i>
+              </label>
+              <label class="toggle-row">
+                <span><i class="layer-dot layer-dot-gap"></i>Missing samples</span>
+                <input id="missing-toggle" type="checkbox" checked />
+                <i class="switch" aria-hidden="true"></i>
+              </label>
+            </div>
+            <div class="mask-note">
+              <span>PASS THROUGH</span>
+              <p>Open east/west boundaries inject and expire dye. Solid and missing cells are excluded from both tracing and display.</p>
+            </div>
+          </section>
+
+          <section class="panel-section audit-section">
+            <div class="section-heading">
+              <span class="section-index">04</span>
+              <div><h2>Frame-rate lab</h2><p>identical physical time, different Δt</p></div>
+            </div>
+            <p class="audit-copy">
+              Run two offscreen transports to <b>t = 2.000 s</b>. The comparison exposes semi-Lagrangian step-size drift instead of hiding it behind a fixed clock.
+            </p>
+            <button class="audit-button" id="audit-button" type="button">
+              <span>RUN 30 ↔ 120 AUDIT</span>
+              <svg viewBox="0 0 20 20"><path d="M4 10h11m-4-4 4 4-4 4" /></svg>
+            </button>
+            <div class="audit-result" id="audit-result">
+              <span>NOT RUN</span>
+              <p>Capture two 2.0 s histories, read back both textures, and compare.</p>
+            </div>
+          </section>
+
+          <section class="panel-section validation-section">
+            <div class="section-heading">
+              <span class="section-index">05</span>
+              <div><h2>Verification</h2><p>analytic checks + GPU readback</p></div>
+            </div>
+            <ul class="check-list">
+              <li id="check-direction"><span class="check-icon"></span><div><b>Boundary direction</b><small>eastward streamline exits outlet</small></div><em>WAIT</em></li>
+              <li id="check-rotation"><span class="check-icon"></span><div><b>Vorticity sign</b><small>positive circulation, CCW</small></div><em>WAIT</em></li>
+              <li id="check-convergence"><span class="check-icon"></span><div><b>Convergence</b><small>inward flux at vortex core</small></div><em>WAIT</em></li>
+              <li id="check-mask"><span class="check-icon"></span><div><b>Mask integrity</b><small>GPU pixels inside / outside mask</small></div><em>WAIT</em></li>
+              <li id="check-framerate"><span class="check-icon"></span><div><b>Frame-rate drift</b><small>30 Hz vs 120 Hz at t = 2 s</small></div><em>NOT RUN</em></li>
+            </ul>
+            <button class="link-button" id="copy-report" type="button">COPY VERIFICATION JSON</button>
+          </section>
+
+          <footer class="inspector-footer">
+            <span>WEBGPU / WGSL</span>
+            <span id="backend-readout">PENDING</span>
+          </footer>
+        </aside>
+      </main>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

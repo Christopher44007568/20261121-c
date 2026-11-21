@@ -1,0 +1,11 @@
+{
+  "name": "flux-lab-webgpu",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "WebGPU time-dependent 2D vector field texture transport with analytics, masks, and frame-rate audits.",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.js"
+  }
+}
