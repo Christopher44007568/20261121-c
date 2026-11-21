@@ -1,0 +1,32 @@
+[
+{
+  "directory": "/home/hj/userfeedback2/uid5-0009/build-asan",
+  "command": "/usr/bin/c++ -DHAVE_GLFW=1 -I/home/hj/userfeedback2/uid5-0009/src -fsanitize=address -fno-omit-frame-pointer -g -std=gnu++20 -Wall -Wextra -Wno-unused-parameter -o CMakeFiles/material_ball.dir/src/main.cpp.o -c /home/hj/userfeedback2/uid5-0009/src/main.cpp",
+  "file": "/home/hj/userfeedback2/uid5-0009/src/main.cpp",
+  "output": "/home/hj/userfeedback2/uid5-0009/build-asan/CMakeFiles/material_ball.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/hj/userfeedback2/uid5-0009/build-asan",
+  "command": "/usr/bin/c++ -DHAVE_GLFW=1 -I/home/hj/userfeedback2/uid5-0009/src -fsanitize=address -fno-omit-frame-pointer -g -std=gnu++20 -Wall -Wextra -Wno-unused-parameter -o CMakeFiles/material_ball.dir/src/vk_engine.cpp.o -c /home/hj/userfeedback2/uid5-0009/src/vk_engine.cpp",
+  "file": "/home/hj/userfeedback2/uid5-0009/src/vk_engine.cpp",
+  "output": "/home/hj/userfeedback2/uid5-0009/build-asan/CMakeFiles/material_ball.dir/src/vk_engine.cpp.o"
+},
+{
+  "directory": "/home/hj/userfeedback2/uid5-0009/build-asan",
+  "command": "/usr/bin/c++ -DHAVE_GLFW=1 -I/home/hj/userfeedback2/uid5-0009/src -fsanitize=address -fno-omit-frame-pointer -g -std=gnu++20 -Wall -Wextra -Wno-unused-parameter -o CMakeFiles/material_ball.dir/src/textures.cpp.o -c /home/hj/userfeedback2/uid5-0009/src/textures.cpp",
+  "file": "/home/hj/userfeedback2/uid5-0009/src/textures.cpp",
+  "output": "/home/hj/userfeedback2/uid5-0009/build-asan/CMakeFiles/material_ball.dir/src/textures.cpp.o"
+},
+{
+  "directory": "/home/hj/userfeedback2/uid5-0009/build-asan",
+  "command": "/usr/bin/c++ -DHAVE_GLFW=1 -I/home/hj/userfeedback2/uid5-0009/src -fsanitize=address -fno-omit-frame-pointer -g -std=gnu++20 -Wall -Wextra -Wno-unused-parameter -o CMakeFiles/material_ball.dir/src/geometry.cpp.o -c /home/hj/userfeedback2/uid5-0009/src/geometry.cpp",
+  "file": "/home/hj/userfeedback2/uid5-0009/src/geometry.cpp",
+  "output": "/home/hj/userfeedback2/uid5-0009/build-asan/CMakeFiles/material_ball.dir/src/geometry.cpp.o"
+},
+{
+  "directory": "/home/hj/userfeedback2/uid5-0009/build-asan",
+  "command": "/usr/bin/c++ -DHAVE_GLFW=1 -I/home/hj/userfeedback2/uid5-0009/src -fsanitize=address -fno-omit-frame-pointer -g -std=gnu++20 -Wall -Wextra -Wno-unused-parameter -o CMakeFiles/material_ball.dir/src/measure.cpp.o -c /home/hj/userfeedback2/uid5-0009/src/measure.cpp",
+  "file": "/home/hj/userfeedback2/uid5-0009/src/measure.cpp",
+  "output": "/home/hj/userfeedback2/uid5-0009/build-asan/CMakeFiles/material_ball.dir/src/measure.cpp.o"
+}
+]

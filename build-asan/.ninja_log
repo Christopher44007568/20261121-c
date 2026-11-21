@@ -1,0 +1,13 @@
+# ninja log v7
+0	90	1795235260306382116	shaders/fabric.vert.spv	6b33ad74309cf401
+0	90	1795235260306382116	/home/hj/userfeedback2/uid5-0009/build-asan/shaders/fabric.vert.spv	6b33ad74309cf401
+0	99	1795235260306382116	shaders/fabric.frag.spv	dfba701de4b82430
+0	99	1795235260306382116	/home/hj/userfeedback2/uid5-0009/build-asan/shaders/fabric.frag.spv	dfba701de4b82430
+100	1616	1795235260326456865	CMakeFiles/material_ball.dir/src/geometry.cpp.o	7d0606229ab98f36
+100	1837	1795235260326652058	CMakeFiles/material_ball.dir/src/measure.cpp.o	767789fba5a172f5
+99	1946	1795235260326157635	CMakeFiles/material_ball.dir/src/textures.cpp.o	6e88f4f9533d5ea8
+99	2298	1795235260318382771	CMakeFiles/material_ball.dir/src/main.cpp.o	d9c05720eb528591
+99	2386	1795235260325958064	CMakeFiles/material_ball.dir/src/vk_engine.cpp.o	eb91e83172a12422
+2386	2482	1795235262606506430	material_ball	1a5d28e463c1ef58
+3	2233	1795235351164625831	CMakeFiles/material_ball.dir/src/vk_engine.cpp.o	eb91e83172a12422
+2233	2325	1795235353396734871	material_ball	1a5d28e463c1ef58
