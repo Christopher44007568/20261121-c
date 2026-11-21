@@ -1,0 +1,17 @@
+{
+  "name": "terra-local-precision-viewer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cesium-style local geographic viewer with ECEF high/low and eye-relative marker transforms",
+  "scripts": {
+    "start": "node scripts/serve.js",
+    "test": "node --test test/*.test.js",
+    "report": "node scripts/generate-reference.js && node scripts/generate-error-report.js",
+    "capture": "node scripts/capture.js",
+    "verify": "npm test && npm run report && npm run capture"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TERRA LOCAL · ECEF Precision Viewer</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <canvas id="scene" aria-label="ECEF local geographic viewer"></canvas>
+    <canvas id="precision-overlay"></canvas>
+    <div class="vignette"></div>
+    <div class="scanlines"></div>
+    <div id="labels" class="labels"></div>
+
+    <header class="masthead">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <span>TERRA</span><span class="brand-dot">·</span><span>LOCAL</span>
+        <span class="brand-rev">PRECISION VIEWER / 01</span>
+      </div>
+      <div class="mode-badge" id="mode-badge">RTC · FLOAT32</div>
+    </header>
+    <div class="subhead">
+      <span id="subtitle">WGS84 ECEF → SHARED ENU ANCHOR → EYE-RELATIVE FLOAT32</span>
+      <span id="clock">LAT 31.2399 N · LON 121.4949 E</span>
+    </div>
+
+    <aside class="telemetry" id="telemetry">
+      <div class="panel-kicker">DATUM / ECEF</div>
+      <dl>
+        <dt>ANCHOR X</dt><dd id="anchor-x">—</dd>
+        <dt>ANCHOR Y</dt><dd id="anchor-y">—</dd>
+        <dt>ANCHOR Z</dt><dd id="anchor-z">—</dd>
+        <dt>CAMERA X</dt><dd id="camera-x">—</dd>
+        <dt>CAMERA Y</dt><dd id="camera-y">—</dd>
+        <dt>CAMERA Z</dt><dd id="camera-z">—</dd>
+        <dt>RANGE</dt><dd id="range">—</dd>
+        <dt>SITE SEP</dt><dd id="site-sep">—</dd>
+        <dt>MARKER GRID</dt><dd>50 mm</dd>
+        <dt>VERTEX PATH</dt><dd id="vertex-path">F64 → F32 ONCE</dd>
+      </dl>
+      <div class="panel-kicker data-kicker">LAST PICK</div>
+      <div class="pick-readout" id="pick-readout">NO SAMPLE</div>
+    </aside>
+
+    <nav class="controls" aria-label="Viewer controls">
+      <button type="button" data-action="tour" id="tour-button">❚❚ PAUSE</button>
+      <button type="button" data-action="mode" id="mode-button">SWITCH HILO</button>
+      <button type="button" data-action="diagnostics" id="diag-button">PRECISION</button>
+      <button type="button" data-action="selftest" id="selftest-button">SELF-TEST</button>
+    </nav>
+
+    <section class="site-rail" aria-label="Sites">
+      <button type="button" data-site="overview" class="site-link">00<br /><span>OVERVIEW</span></button>
+      <button type="button" data-site="bund" class="site-link">01<br /><span>BUND</span></button>
+      <button type="button" data-site="lujiazui" class="site-link">02<br /><span>LUJIAZUI</span></button>
+    </section>
+
+    <section class="error-panel" id="error-panel" hidden>
+      <div class="panel-head">
+        <span>PROJECTION ERROR</span>
+        <span id="error-units">CSS PX / 1440×810</span>
+      </div>
+      <div class="metric-grid">
+        <div><span>RTC p95</span><strong id="rtc-p95">—</strong></div>
+        <div><span>HI/LO p95</span><strong id="hilo-p95">—</strong></div>
+        <div><span>ABS F32</span><strong id="abs-p95">—</strong></div>
+      </div>
+      <div class="histogram" id="histogram"></div>
+      <div class="panel-note" id="error-note">FLOAT64 CPU REFERENCE</div>
+    </section>
+
+    <footer class="footer">
+      <div class="legend">
+        <span><i class="dot dot-site"></i>SITE CLUSTER</span>
+        <span><i class="dot dot-anchor"></i>TANGENT ORIGIN</span>
+        <span><i class="dot dot-abs"></i>ABS ECEF F32 COLLAPSE</span>
+      </div>
+      <div class="status">
+        <div class="status-main" id="status-main">SHANGHAI / ANCHOR</div>
+        <div class="status-sub" id="status-sub">AUTO CRUISE · CAMERA TANGENT TO WGS84 ELLIPSOID</div>
+      </div>
+      <div class="tour-progress" id="tour-progress"></div>
+    </footer>
+
+    <div class="toast" id="toast" role="status"></div>
+    <div class="cursor-label" id="cursor-label" hidden></div>
+    <div class="loading" id="loading"><span></span>INITIALIZING WEBGL2</div>
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
