@@ -1,0 +1,20 @@
+{
+  "name": "skia-tiled-poster",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Streaming, overlap-aware tiled poster exporter built on Skia",
+  "main": "./src/index.mjs",
+  "exports": "./src/index.mjs",
+  "scripts": {
+    "test": "node --test --test-reporter=spec",
+    "benchmark": "node scripts/benchmark.mjs",
+    "demo": "node scripts/render-demo.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.80"
+  }
+}
