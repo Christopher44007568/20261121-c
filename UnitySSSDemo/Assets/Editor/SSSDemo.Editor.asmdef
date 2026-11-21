@@ -1,0 +1,14 @@
+{
+    "name": "SSSDemo.Editor",
+    "rootNamespace": "SSSDemo",
+    "references": [
+        "SSSDemo.Runtime",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.HighDefinition.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "autoReferenced": true
+}
