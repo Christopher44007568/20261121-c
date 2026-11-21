@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 420">
+<style>.bg{fill:#0c1114}.grid{stroke:#263137;stroke-width:1}.axis{fill:#7c8b8e;font:12px monospace}.title{fill:#e8e4d8;font:600 21px sans-serif}.label{fill:#9ba8a8;font:13px sans-serif}</style>
+<rect width="980" height="420" class="bg"/>
+<text x="72" y="31" class="title">最大距离扫描 · 平均 AO</text>
+<line x1="72.0" y1="54" x2="72.0" y2="354" class="grid"/>
+<text x="72.0" y="378" text-anchor="middle" class="axis">0.2</text>
+<line x1="257.4" y1="54" x2="257.4" y2="354" class="grid"/>
+<text x="257.4" y="378" text-anchor="middle" class="axis">0.4</text>
+<line x1="407.1" y1="54" x2="407.1" y2="354" class="grid"/>
+<text x="407.1" y="378" text-anchor="middle" class="axis">0.7</text>
+<line x1="551.2" y1="54" x2="551.2" y2="354" class="grid"/>
+<text x="551.2" y="378" text-anchor="middle" class="axis">1.2</text>
+<line x1="736.6" y1="54" x2="736.6" y2="354" class="grid"/>
+<text x="736.6" y="378" text-anchor="middle" class="axis">2.4</text>
+<line x1="922.0" y1="54" x2="922.0" y2="354" class="grid"/>
+<text x="922.0" y="378" text-anchor="middle" class="axis">4.8</text>
+<line x1="72" y1="354" x2="922" y2="354" class="grid"/>
+<text x="62" y="358" text-anchor="end" class="axis">0.0</text>
+<line x1="72" y1="204" x2="922" y2="204" class="grid"/>
+<text x="62" y="208" text-anchor="end" class="axis">0.5</text>
+<line x1="72" y1="54" x2="922" y2="54" class="grid"/>
+<text x="62" y="58" text-anchor="end" class="axis">1.0</text>
+<path d="M72.0,83.3 L257.4,93.5 L407.1,103.5 L551.2,113.2 L736.6,124.2 L922.0,130.3" fill="none" stroke="#e6b566" stroke-width="2.8"/>
+<path d="M72.0,54.5 L257.4,56.8 L407.1,79.2 L551.2,96.9 L736.6,108.7 L922.0,111.9" fill="none" stroke="#6fc6bd" stroke-width="2.8"/>
+<path d="M72.0,118.4 L257.4,136.5 L407.1,140.0 L551.2,140.2 L736.6,140.2 L922.0,140.1" fill="none" stroke="#df7e73" stroke-width="2.8"/>
+<circle cx="700" cy="27" r="4" fill="#e6b566"/>
+<text x="709" y="32" class="label">sphere-plane</text>
+<circle cx="792" cy="27" r="4" fill="#6fc6bd"/>
+<text x="801" y="32" class="label">edge-contact</text>
+<circle cx="884" cy="27" r="4" fill="#df7e73"/>
+<text x="893" y="32" class="label">stacked-gap</text>
+</svg>

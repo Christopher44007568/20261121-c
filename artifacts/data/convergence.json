@@ -1,0 +1,367 @@
+{
+  "generatedAt": "2026-11-21T06:43:03.504Z",
+  "methodology": {
+    "referenceSamples": 512,
+    "seeds": [
+      1,
+      2,
+      3
+    ],
+    "sampleCounts": [
+      4,
+      8,
+      16,
+      32,
+      64,
+      128,
+      256,
+      512
+    ],
+    "sampling": "cosine-weighted, normal-oriented Hammersley hemisphere",
+    "suppression": "normal bias + ray tMin + source-part skip + source-face skip"
+  },
+  "cases": [
+    {
+      "id": "sphere-plane",
+      "title": "球贴平面",
+      "subtitle": "接触点与软接触梯度",
+      "maxDistance": 2.4,
+      "referenceSamples": 512,
+      "vertexCount": 2312,
+      "triangleCount": 4256,
+      "referenceMs": 557.7948,
+      "series": [
+        {
+          "samples": 4,
+          "rmse": 0.07580297359674094,
+          "mae": 0.03858455217297166,
+          "maxError": 0.42941720641516395,
+          "darkMismatch": 13,
+          "averageMs": 7.778633333333346
+        },
+        {
+          "samples": 8,
+          "rmse": 0.04618698347882924,
+          "mae": 0.02433437980126675,
+          "maxError": 0.27005156527936847,
+          "darkMismatch": 4,
+          "averageMs": 13.513100000000009
+        },
+        {
+          "samples": 16,
+          "rmse": 0.02677117223211517,
+          "mae": 0.014036682710560687,
+          "maxError": 0.14513557806513666,
+          "darkMismatch": 0,
+          "averageMs": 24.1408666666667
+        },
+        {
+          "samples": 32,
+          "rmse": 0.01435770928187004,
+          "mae": 0.007681265042738955,
+          "maxError": 0.08310881638838574,
+          "darkMismatch": 0,
+          "averageMs": 42.97499999999999
+        },
+        {
+          "samples": 64,
+          "rmse": 0.009038193435120256,
+          "mae": 0.004738121513339594,
+          "maxError": 0.048857336067685865,
+          "darkMismatch": 0,
+          "averageMs": 67.90753333333332
+        },
+        {
+          "samples": 128,
+          "rmse": 0.00544797382873748,
+          "mae": 0.0029527206555772464,
+          "maxError": 0.03075930931988885,
+          "darkMismatch": 0,
+          "averageMs": 118.50756666666666
+        },
+        {
+          "samples": 256,
+          "rmse": 0.0035642984456706224,
+          "mae": 0.0019458113834336314,
+          "maxError": 0.021060079024508127,
+          "darkMismatch": 0,
+          "averageMs": 224.81363333333329
+        },
+        {
+          "samples": 512,
+          "rmse": 0.00203396622999333,
+          "mae": 0.0011344927142939597,
+          "maxError": 0.013388755742241335,
+          "darkMismatch": 0,
+          "averageMs": 696.4484333333335
+        }
+      ],
+      "distanceSweep": [
+        {
+          "maxDistance": 0.2,
+          "averageAO": 0.9023139463581196,
+          "darkFraction": 0.04671280276816609,
+          "blockedFraction": 0.09768605345673215
+        },
+        {
+          "maxDistance": 0.4,
+          "averageAO": 0.8683237950093369,
+          "darkFraction": 0.06358131487889274,
+          "blockedFraction": 0.13167620497106358
+        },
+        {
+          "maxDistance": 0.7,
+          "averageAO": 0.8348506137384434,
+          "darkFraction": 0.06401384083044982,
+          "blockedFraction": 0.16514938615687888
+        },
+        {
+          "maxDistance": 1.2,
+          "averageAO": 0.8025563536981387,
+          "darkFraction": 0.07050173010380623,
+          "blockedFraction": 0.19744364619462518
+        },
+        {
+          "maxDistance": 2.4,
+          "averageAO": 0.7659421704240763,
+          "darkFraction": 0.078719723183391,
+          "blockedFraction": 0.23405782964965166
+        },
+        {
+          "maxDistance": 4.8,
+          "averageAO": 0.7457625695217028,
+          "darkFraction": 0.08217993079584775,
+          "blockedFraction": 0.25423743062858895
+        }
+      ]
+    },
+    {
+      "id": "edge-contact",
+      "title": "贴边接触",
+      "subtitle": "悬挑零件与平台边缘",
+      "maxDistance": 2.4,
+      "referenceSamples": 512,
+      "vertexCount": 1435,
+      "triangleCount": 2256,
+      "referenceMs": 256.6117999999997,
+      "series": [
+        {
+          "samples": 4,
+          "rmse": 0.09498539143466711,
+          "mae": 0.04923606471590508,
+          "maxError": 0.4744102082221337,
+          "darkMismatch": 9,
+          "averageMs": 4.069866666666712
+        },
+        {
+          "samples": 8,
+          "rmse": 0.057065365241419204,
+          "mae": 0.02934712896270106,
+          "maxError": 0.3031250963413637,
+          "darkMismatch": 4,
+          "averageMs": 7.603733333333366
+        },
+        {
+          "samples": 16,
+          "rmse": 0.032675794068715396,
+          "mae": 0.016728834439103123,
+          "maxError": 0.18483443248505682,
+          "darkMismatch": 0,
+          "averageMs": 12.741999999999885
+        },
+        {
+          "samples": 32,
+          "rmse": 0.01901963463575633,
+          "mae": 0.009859149611688088,
+          "maxError": 0.11972714888504125,
+          "darkMismatch": 0,
+          "averageMs": 22.941766666666506
+        },
+        {
+          "samples": 64,
+          "rmse": 0.010532661320460511,
+          "mae": 0.005466007654818795,
+          "maxError": 0.06494458041159935,
+          "darkMismatch": 0,
+          "averageMs": 38.20353333333302
+        },
+        {
+          "samples": 128,
+          "rmse": 0.006207343182060204,
+          "mae": 0.003243465944193745,
+          "maxError": 0.03477591233315811,
+          "darkMismatch": 0,
+          "averageMs": 67.65206666666654
+        },
+        {
+          "samples": 256,
+          "rmse": 0.004096273632075732,
+          "mae": 0.0021587136348721375,
+          "maxError": 0.024894892740872976,
+          "darkMismatch": 0,
+          "averageMs": 130.58703333333355
+        },
+        {
+          "samples": 512,
+          "rmse": 0.0021811080919771422,
+          "mae": 0.0011889139146809516,
+          "maxError": 0.011311386340583854,
+          "darkMismatch": 0,
+          "averageMs": 249.9413666666669
+        }
+      ],
+      "distanceSweep": [
+        {
+          "maxDistance": 0.2,
+          "averageAO": 0.9982147763546495,
+          "darkFraction": 0,
+          "blockedFraction": 0.0017852236552468991
+        },
+        {
+          "maxDistance": 0.4,
+          "averageAO": 0.9905818630218773,
+          "darkFraction": 0,
+          "blockedFraction": 0.00941813700030905
+        },
+        {
+          "maxDistance": 0.7,
+          "averageAO": 0.9159497938294056,
+          "darkFraction": 0,
+          "blockedFraction": 0.08405020628692356
+        },
+        {
+          "maxDistance": 1.2,
+          "averageAO": 0.856935921796621,
+          "darkFraction": 0.0006968641114982578,
+          "blockedFraction": 0.14306407848386035
+        },
+        {
+          "maxDistance": 2.4,
+          "averageAO": 0.8175286923512115,
+          "darkFraction": 0.06480836236933799,
+          "blockedFraction": 0.18247130765670502
+        },
+        {
+          "maxDistance": 4.8,
+          "averageAO": 0.8071551380703724,
+          "darkFraction": 0.06480836236933799,
+          "blockedFraction": 0.19284486184724142
+        }
+      ]
+    },
+    {
+      "id": "stacked-gap",
+      "title": "叠层低间隙",
+      "subtitle": "45 mm 等效间隙",
+      "maxDistance": 1.2,
+      "referenceSamples": 512,
+      "vertexCount": 1470,
+      "triangleCount": 2328,
+      "referenceMs": 266.28539999999975,
+      "series": [
+        {
+          "samples": 4,
+          "rmse": 0.09565950724894007,
+          "mae": 0.05148556308069848,
+          "maxError": 0.4249646067619324,
+          "darkMismatch": 3,
+          "averageMs": 4.130599999999807
+        },
+        {
+          "samples": 8,
+          "rmse": 0.05959148954621298,
+          "mae": 0.032897844716609524,
+          "maxError": 0.251661170463936,
+          "darkMismatch": 0,
+          "averageMs": 7.833799999999125
+        },
+        {
+          "samples": 16,
+          "rmse": 0.03340579366671278,
+          "mae": 0.017663866610927937,
+          "maxError": 0.15907396156024312,
+          "darkMismatch": 0,
+          "averageMs": 14.521200000000439
+        },
+        {
+          "samples": 32,
+          "rmse": 0.018703319801350277,
+          "mae": 0.009857986773800372,
+          "maxError": 0.09450165103463566,
+          "darkMismatch": 0,
+          "averageMs": 26.638966666666118
+        },
+        {
+          "samples": 64,
+          "rmse": 0.01111299149542976,
+          "mae": 0.00599388103024474,
+          "maxError": 0.05710412614485797,
+          "darkMismatch": 0,
+          "averageMs": 46.416866666666465
+        },
+        {
+          "samples": 128,
+          "rmse": 0.006598937147537148,
+          "mae": 0.003598456913655486,
+          "maxError": 0.03215052629607951,
+          "darkMismatch": 0,
+          "averageMs": 100.78706666666646
+        },
+        {
+          "samples": 256,
+          "rmse": 0.0043277524913553096,
+          "mae": 0.0023746576629726005,
+          "maxError": 0.021711344812430606,
+          "darkMismatch": 0,
+          "averageMs": 141.09660000000017
+        },
+        {
+          "samples": 512,
+          "rmse": 0.0024411863292123485,
+          "mae": 0.0013618520871408225,
+          "maxError": 0.010618947534000167,
+          "darkMismatch": 0,
+          "averageMs": 275.4124666666673
+        }
+      ],
+      "distanceSweep": [
+        {
+          "maxDistance": 0.2,
+          "averageAO": 0.7852896139858855,
+          "darkFraction": 0.14761904761904762,
+          "blockedFraction": 0.21471038511447404
+        },
+        {
+          "maxDistance": 0.4,
+          "averageAO": 0.7249896120504533,
+          "darkFraction": 0.14829931972789115,
+          "blockedFraction": 0.2750103877645087
+        },
+        {
+          "maxDistance": 0.7,
+          "averageAO": 0.7134984299859028,
+          "darkFraction": 0.14829931972789115,
+          "blockedFraction": 0.2865015700291589
+        },
+        {
+          "maxDistance": 1.2,
+          "averageAO": 0.7127959029983545,
+          "darkFraction": 0.14829931972789115,
+          "blockedFraction": 0.2872040969569895
+        },
+        {
+          "maxDistance": 2.4,
+          "averageAO": 0.7127977797609263,
+          "darkFraction": 0.14829931972789115,
+          "blockedFraction": 0.287202220160172
+        },
+        {
+          "maxDistance": 4.8,
+          "averageAO": 0.7129810684186347,
+          "darkFraction": 0.1510204081632653,
+          "blockedFraction": 0.2870189314933025
+        }
+      ]
+    }
+  ]
+}

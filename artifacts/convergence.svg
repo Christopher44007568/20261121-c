@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 480">
+<style>.bg{fill:#0c1114}.grid{stroke:#263137;stroke-width:1}.axis{fill:#7c8b8e;font:12px monospace}.title{fill:#e8e4d8;font:600 21px sans-serif}.label{fill:#9ba8a8;font:13px sans-serif}</style>
+<rect width="980" height="480" class="bg"/>
+<text x="72" y="31" class="title">AO 收敛 · RMSE vs 样本数</text>
+<line x1="72" y1="54" x2="952" y2="54" class="grid"/>
+<text x="62" y="58" text-anchor="end" class="axis">0.100</text>
+<line x1="72" y1="144.5" x2="952" y2="144.5" class="grid"/>
+<text x="62" y="148.5" text-anchor="end" class="axis">0.075</text>
+<line x1="72" y1="235" x2="952" y2="235" class="grid"/>
+<text x="62" y="239" text-anchor="end" class="axis">0.050</text>
+<line x1="72" y1="325.5" x2="952" y2="325.5" class="grid"/>
+<text x="62" y="329.5" text-anchor="end" class="axis">0.025</text>
+<line x1="72" y1="416" x2="952" y2="416" class="grid"/>
+<text x="62" y="420" text-anchor="end" class="axis">0.000</text>
+<text x="72.0" y="446" text-anchor="middle" class="axis">4</text>
+<text x="197.7" y="446" text-anchor="middle" class="axis">8</text>
+<text x="323.4" y="446" text-anchor="middle" class="axis">16</text>
+<text x="449.1" y="446" text-anchor="middle" class="axis">32</text>
+<text x="574.9" y="446" text-anchor="middle" class="axis">64</text>
+<text x="700.6" y="446" text-anchor="middle" class="axis">128</text>
+<text x="826.3" y="446" text-anchor="middle" class="axis">256</text>
+<text x="952.0" y="446" text-anchor="middle" class="axis">512</text>
+<text x="512" y="470" text-anchor="middle" class="label">samples / vertex</text>
+<text transform="translate(20 235) rotate(-90)" text-anchor="middle" class="label">RMSE</text>
+<path d="M72.0,141.6 L197.7,248.8 L323.4,319.1 L449.1,364.0 L574.9,383.3 L700.6,396.3 L826.3,403.1 L952.0,408.6" fill="none" stroke="#e6b566" stroke-width="2.8"/>
+<path d="M72.0,72.2 L197.7,209.4 L323.4,297.7 L449.1,347.1 L574.9,377.9 L700.6,393.5 L826.3,401.2 L952.0,408.1" fill="none" stroke="#6fc6bd" stroke-width="2.8"/>
+<path d="M72.0,69.7 L197.7,200.3 L323.4,295.1 L449.1,348.3 L574.9,375.8 L700.6,392.1 L826.3,400.3 L952.0,407.2" fill="none" stroke="#df7e73" stroke-width="2.8"/>
+<circle cx="700" cy="27" r="4" fill="#e6b566"/>
+<text x="709" y="32" class="label">sphere-plane</text>
+<circle cx="792" cy="27" r="4" fill="#6fc6bd"/>
+<text x="801" y="32" class="label">edge-contact</text>
+<circle cx="884" cy="27" r="4" fill="#df7e73"/>
+<text x="893" y="32" class="label">stacked-gap</text>
+</svg>
