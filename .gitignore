@@ -1,0 +1,8 @@
+build/
+build_*/
+*.o
+*.obj
+results/sim_bench
+benchmark_gpu.csv
+.vs/
+*.user
