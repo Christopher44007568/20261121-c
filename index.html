@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Assembly Measure · WebGL2 Technical Inspection</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">M</span>
+          <div class="brand-copy">
+            <p class="eyebrow">WEBGL2 / TECHNICAL INSPECTION</p>
+            <h1>Assembly Measure</h1>
+          </div>
+        </div>
+        <div class="system-status">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span>LIVE</span>
+          <span class="status-rule" aria-hidden="true"></span>
+          <span id="dpr-status">DPR 2.0 · 0×0</span>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="stage" id="stage" aria-label="三维技术图查看器">
+          <canvas id="scene" aria-label="WebGL2 双零件装配场景"></canvas>
+          <canvas id="measure-layer" aria-hidden="true"></canvas>
+
+          <div class="view-heading" aria-hidden="true">
+            <span>DRAG TO ORBIT</span>
+            <span class="dot-separator">·</span>
+            <span>SCROLL TO ZOOM</span>
+          </div>
+
+          <div class="legend" aria-label="尺寸线图例">
+            <span><i class="legend-line visible"></i>可见尺寸</span>
+            <span><i class="legend-line hidden"></i>Z 遮挡</span>
+          </div>
+
+          <div class="label-layer" id="label-layer"></div>
+
+          <div class="zoom-controls" aria-label="视图控制">
+            <button type="button" data-action="zoom-in" aria-label="放大">+</button>
+            <button type="button" data-action="zoom-out" aria-label="缩小">−</button>
+            <button type="button" class="fit" data-action="fit">FIT</button>
+          </div>
+
+          <footer class="stage-status">
+            <span id="status-measures">M2 1.800 mm / M1 14.000 mm</span>
+            <span id="status-camera">AZ 36° / EL 22°</span>
+            <span id="status-probe">DEPTH PROBE · READY</span>
+          </footer>
+        </section>
+
+        <aside class="inspector" aria-label="尺寸检查面板">
+          <p class="eyebrow panel-eyebrow">INSPECTION SET</p>
+          <h2>配合尺寸</h2>
+          <p class="panel-subtitle">两个零件 · 近距离重叠标注</p>
+
+          <div class="dimension-cards">
+            <article class="dimension-card" data-dimension="M2">
+              <div class="card-top">
+                <span class="card-id">M2 / 配合间隙</span>
+                <span class="card-kind">2 PARTS</span>
+              </div>
+              <p class="card-value"><strong>1.800</strong><span>mm</span></p>
+              <p class="card-parts">BRACKET-01 ↔ ROTOR-02</p>
+            </article>
+            <article class="dimension-card" data-dimension="M1">
+              <div class="card-top">
+                <span class="card-id">M1 / 总跨距</span>
+                <span class="card-kind">2 PARTS</span>
+              </div>
+              <p class="card-value"><strong>14.000</strong><span>mm</span></p>
+              <p class="card-parts">BRACKET-01 ↔ ROTOR-02</p>
+            </article>
+          </div>
+
+          <div class="policy-note">
+            <p class="policy-title">LAYOUT POLICY</p>
+            <p>标签保持屏幕尺寸，优先保留 12 px 模型净空与 8 px 标签间距；缩放时锁定当前槽位，避免跳动。</p>
+          </div>
+
+          <dl class="metrics">
+            <div><dt>模型净空</dt><dd id="metric-model">—</dd></div>
+            <div><dt>标签间距</dt><dd id="metric-labels">—</dd></div>
+            <div><dt>遮挡段</dt><dd id="metric-occlusion">—</dd></div>
+            <div><dt>视口留白</dt><dd id="metric-viewport">—</dd></div>
+          </dl>
+
+          <div class="verification">
+            <span class="verification-mark" aria-hidden="true"></span>
+            <div>
+              <p>DEPTH-PROBED SCREEN SPACE</p>
+              <span>实际世界距离与遮挡采样处于同一帧</span>
+            </div>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
