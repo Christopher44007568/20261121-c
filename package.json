@@ -1,0 +1,16 @@
+{
+  "name": "ao-bench",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Offline ambient-occlusion baking bench for procedural part meshes",
+  "scripts": {
+    "start": "node server.mjs",
+    "generate": "node scripts/generate-reference.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "verify": "node scripts/verify.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>AO//BENCH · Offline Occlusion Lab</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 29 9.5v13L16 30 3 22.5v-13z' fill='none' stroke='%23e6b566' stroke-width='2'/%3E%3Cpath d='m16 8 7 4v8l-7 4-7-4v-8z' fill='%23e6b566'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 38 38" aria-hidden="true">
+          <path d="M19 2.5 34 11v16L19 35.5 4 27V11z" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <path d="m19 8 8.5 4.9v9.8L19 27.6l-8.5-4.9v-9.8z" fill="none" stroke="currentColor" stroke-width="1.3"/>
+          <circle cx="19" cy="18" r="2.4" fill="currentColor"/>
+        </svg>
+        <div>
+          <div class="brand-title">AO<span>//</span>BENCH</div>
+          <div class="brand-sub">OFFLINE OCCLUSION LAB</div>
+        </div>
+      </div>
+      <div class="engine-chips">
+        <span class="chip"><i class="live-dot"></i>LOCAL WORKER</span>
+        <span class="chip">CPU · BVH</span>
+        <span class="chip">HEMI · COSINE</span>
+        <span class="chip">V1.0</span>
+      </div>
+      <div class="session">
+        <span>SESSION <b id="session-clock">00:00:00</b></span>
+        <span class="status-pill" id="status-pill">IDLE</span>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="panel bench-panel">
+        <div class="panel-heading">
+          <span>测试场景</span>
+          <em>03 CASES</em>
+        </div>
+        <div class="case-list" id="case-list"></div>
+
+        <div class="section-heading">
+          <span>烘焙参数</span>
+          <em>03</em>
+        </div>
+        <div class="parameter-stack">
+          <div class="control">
+            <div class="control-line">
+              <label for="samples">采样数 <small>SAMPLES</small></label>
+              <output id="samples-value">64 <small>SPP</small></output>
+            </div>
+            <input id="samples" type="range" min="0" max="7" step="1" value="4">
+            <div class="range-scale"><span>4</span><span>512</span></div>
+          </div>
+          <div class="control">
+            <div class="control-line">
+              <label for="max-distance">最大距离 <small>MAX DISTANCE</small></label>
+              <output id="distance-value">2.40 <small>M</small></output>
+            </div>
+            <input id="max-distance" type="range" min="0.05" max="6" step="0.05" value="2.4">
+            <div class="range-scale"><span>0.05</span><span>6.0 M</span></div>
+          </div>
+          <div class="control">
+            <div class="control-line">
+              <label for="directionality">方向性 <small>DIRECTIONALITY</small></label>
+              <output id="directionality-value">100<small>%</small></output>
+            </div>
+            <input id="directionality" type="range" min="0" max="100" step="1" value="100">
+            <div class="range-scale"><span>均匀半球</span><span>余弦聚焦</span></div>
+          </div>
+        </div>
+        <div class="toggle-stack">
+          <label class="toggle-row">
+            <span><b>自交抑制</b><small>法线偏置 + 源面跳过</small></span>
+            <input id="suppression" type="checkbox" checked>
+            <i class="switch"></i>
+          </label>
+          <label class="toggle-row">
+            <span><b>参数变化重烘</b><small>REBAKE ON CHANGE</small></span>
+            <input id="auto-rebake" type="checkbox" checked>
+            <i class="switch"></i>
+          </label>
+        </div>
+        <button class="bake-button" id="bake-button">
+          <span class="bake-icon">↻</span>
+          <span class="bake-copy"><b>重新烘焙</b><small>REBAKE CURRENT CASE</small></span>
+          <kbd>B</kbd>
+        </button>
+        <div class="bake-progress">
+          <div class="progress-meta"><span id="progress-label">CPU · READY</span><span id="progress-value">0%</span></div>
+          <div class="progress-track"><i id="progress-bar"></i></div>
+        </div>
+        <div class="bench-foot">
+          <span>BVH · HEMISPHERE</span>
+          <span>SHA 512</span>
+        </div>
+      </aside>
+
+      <section class="stage-panel">
+        <header class="stage-heading">
+          <div>
+            <div class="eyebrow">ACTIVE CASE / <b id="case-code">SPHERE / PLANE</b></div>
+            <h1 id="case-title">球贴平面</h1>
+            <p id="case-subtitle">接触点与软接触梯度</p>
+          </div>
+          <div class="mode-switch" id="mode-switch">
+            <button type="button" data-mode="vertex" class="active">顶点 AO</button>
+            <button type="button" data-mode="lightmap">光照贴图</button>
+          </div>
+        </header>
+        <div class="viewport-shell">
+          <canvas id="viewport"></canvas>
+          <div class="viewport-topline">
+            <span class="viewport-badge" id="viewport-badge">顶点 AO · 64 SPP</span>
+            <div class="viewport-tools">
+              <button type="button" id="grid-toggle" class="icon-button active" title="切换网格">#</button>
+              <button type="button" id="export-button" class="text-button" title="导出当前烘焙结果">导出</button>
+            </div>
+          </div>
+          <div class="viewport-legend">
+            <span><i class="ao-swatch"></i>AO</span>
+            <span id="legend-distance">RANGE 2.40 M</span>
+          </div>
+          <div class="diagnostic-markers" id="diagnostic-markers"></div>
+          <div class="viewport-corner" id="viewport-corner">VERTEX · CPU</div>
+          <div class="viewport-hint">拖动旋转 · 滚轮缩放 · 双击复位</div>
+        </div>
+      </section>
+
+      <aside class="panel analysis-panel">
+        <div class="panel-heading analysis-head">
+          <span>分析</span>
+          <em id="analysis-case">CASE 01</em>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card"><span>平均 AO</span><b id="stat-ao">—</b><small>AVG OCCLUSION</small></div>
+          <div class="stat-card"><span>耗时</span><b id="stat-time">—</b><small>BAKE TIME</small></div>
+          <div class="stat-card"><span>顶点</span><b id="stat-vertices">—</b><small>VERTICES</small></div>
+          <div class="stat-card accent"><span>参考 RMSE</span><b id="stat-rmse">—</b><small>VS 512 SPP</small></div>
+        </div>
+        <div class="subheading">
+          <span>收敛曲线</span>
+          <div class="chart-tabs">
+            <button type="button" data-chart="spp" class="active">SPP</button>
+            <button type="button" data-chart="distance">DIST</button>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chart" width="620" height="350"></canvas>
+        </div>
+        <div class="chart-caption">
+          <span id="chart-caption">RMSE · 低差异采样</span>
+          <span id="chart-hover">512 SPP REF</span>
+        </div>
+        <div class="subheading diagnostic-heading">
+          <span>异常黑点定位</span>
+          <em id="diag-badge" class="warning-pill">4 SPP · 无抑制</em>
+        </div>
+        <p class="diag-intro" id="diag-intro">压力测试复现低样本自交暗斑，点击条目可在视口定位。</p>
+        <div class="diag-list" id="diag-list"></div>
+        <button class="diag-all" id="diag-all" type="button">显示全部异常点 <span id="diag-total">0</span></button>
+        <div class="reference-strip">
+          <div class="reference-copy">
+            <span>参考图</span>
+            <b id="reference-label">512 SPP</b>
+          </div>
+          <img id="reference-image" alt="当前场景的离线 AO 参考图">
+        </div>
+      </aside>
+    </main>
+    <div class="toast" id="toast"></div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
