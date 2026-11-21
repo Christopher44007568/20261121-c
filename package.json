@@ -1,0 +1,13 @@
+{
+  "name": "webgpu-hdr-bloom",
+  "version": "1.0.0",
+  "description": "Testable WebGPU HDR bloom pipeline: soft-knee threshold, area-aware downsampling, HDR composite before exposure.",
+  "type": "commonjs",
+  "main": "src/bloom-pipeline.js",
+  "scripts": {
+    "test": "node test/run-bloom-test.js"
+  },
+  "dependencies": {
+    "webgpu": "0.6.2"
+  }
+}

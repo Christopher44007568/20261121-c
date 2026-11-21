@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WebGPU HDR Bloom — subpixel filament stability</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0; padding: 24px; background: #0b1018; color: #d8e4f0;
+      font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    h1 { font-size: 16px; margin: 0 0 4px; }
+    p.sub { color: #8fa0b5; margin: 0 0 16px; }
+    .grid { display: flex; gap: 16px; flex-wrap: wrap; }
+    .panel { background: #0a0f16; border: 1px solid #202936; border-radius: 10px; padding: 12px; }
+    canvas { width: 384px; height: 384px; display: block; image-rendering: pixelated; }
+    .label { color: #aebdcf; margin-bottom: 8px; }
+    .red { color: #ff8a84; } .cyan { color: #67e8f9; }
+    .readout { margin-top: 10px; font-size: 12px; color: #9fb2c8; white-space: pre; }
+    button {
+      background: #16202e; color: #d8e4f0; border: 1px solid #2c3a4d;
+      border-radius: 8px; padding: 6px 14px; cursor: pointer; font: inherit;
+    }
+    button:hover { border-color: #3d5169; }
+  </style>
+</head>
+<body>
+  <h1>WebGPU HDR Bloom · 亚像素发光丝稳定性</h1>
+  <p class="sub">
+    左：普通点采样降采样（亮线错过采样晶格即消失）。右：软阈值 + 2×2 面积盒降采样 + 9-tap tent 上采样，
+    HDR 合成在曝光前完成。
+  </p>
+  <div class="grid">
+    <div class="panel">
+      <div class="label red">POINT SAMPLE (naive)</div>
+      <canvas id="naive" width="256" height="256"></canvas>
+      <div class="readout" id="naiveOut"></div>
+    </div>
+    <div class="panel">
+      <div class="label cyan">SOFT + AREA BOX (improved)</div>
+      <canvas id="improved" width="256" height="256"></canvas>
+      <div class="readout" id="improvedOut"></div>
+    </div>
+  </div>
+  <p style="margin-top:16px">
+    <button id="toggle">暂停</button>
+    <span style="color:#65e79a">灰卡目标 0.18 · 所有 HDR 中间纹理为 rgba16float · 曝光仅作用于最终显示 pass</span>
+  </p>
+  <script type="module" src="./demo.js"></script>
+</body>
+</html>
