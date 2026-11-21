@@ -1,0 +1,7 @@
+build/
+build-*/
+*.pcloud
+*.csv
+*.user
+*.autosave
+CMakeUserPresets.json

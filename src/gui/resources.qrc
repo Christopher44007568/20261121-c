@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/shaders">
+        <file alias="point.vert">../../shaders/point.vert</file>
+        <file alias="point.frag">../../shaders/point.frag</file>
+    </qresource>
+</RCC>
