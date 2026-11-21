@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>可见边线框查看器</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <div>
+            <h1>可见边线框</h1>
+            <p>WebGL2 · 实体深度预渲染</p>
+          </div>
+        </div>
+        <div class="topbar-meta">
+          <span id="gpu-badge" class="badge">初始化</span>
+          <span id="camera-readout" class="readout">--</span>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="panel controls" aria-label="渲染控制">
+          <section class="control-group">
+            <h2>判定方式</h2>
+            <div class="segmented" id="mode-control">
+              <button type="button" data-mode="offset">投影偏移</button>
+              <button type="button" data-mode="depth">深度相容</button>
+              <button type="button" data-mode="split">并排比较</button>
+            </div>
+            <p id="mode-description" class="control-note">
+              投影前将边线向相机偏移，再用严格深度测试判定。
+            </p>
+          </section>
+
+          <section class="control-group">
+            <label class="slider-label" for="offset-range">
+              <span>偏移量</span>
+              <output id="offset-value">0.050 u</output>
+            </label>
+            <input id="offset-range" type="range" min="0.002" max="0.120" step="0.002" value="0.05" />
+            <label class="slider-label" for="tolerance-range">
+              <span>相容容差</span>
+              <output id="tolerance-value">1.0e-9</output>
+            </label>
+            <input id="tolerance-range" type="range" min="0.0000000001" max="0.0000000200" step="0.0000000001" value="0.0000000010" />
+          </section>
+
+          <section class="control-group">
+            <h2>相机路径</h2>
+            <div class="station-list" id="station-list"></div>
+            <div class="path-actions">
+              <button id="prev-station" class="secondary" type="button" title="上一站">上一站</button>
+              <button id="tour-button" class="primary" type="button">自动巡线</button>
+              <button id="next-station" class="secondary" type="button" title="下一站">下一站</button>
+            </div>
+            <p id="path-status" class="control-note">拖动旋转 · 滚轮缩放 · 双击重置</p>
+          </section>
+
+          <section class="control-group compact">
+            <h2>图例</h2>
+            <div class="legend-line"><i class="swatch offset"></i>投影偏移</div>
+            <div class="legend-line"><i class="swatch depth"></i>深度相容</div>
+            <div class="legend-line"><i class="swatch hidden"></i>参考隐藏边（默认不绘制）</div>
+          </section>
+        </aside>
+
+        <section class="stage" aria-label="3D 查看器">
+          <canvas id="view" aria-label="实体模型与可见边线框"></canvas>
+          <div class="split-labels" id="split-labels" hidden>
+            <span class="offset-label">投影偏移</span>
+            <span class="depth-label">深度相容</span>
+          </div>
+          <div class="stage-corner">
+            <span id="sample-count">0 条边</span>
+            <span id="analysis-time">-- ms</span>
+          </div>
+          <div id="loading" class="loading">
+            <span class="spinner"></span>
+            <strong>正在创建深度纹理</strong>
+          </div>
+        </section>
+
+        <aside class="panel diagnostics" aria-label="可见性诊断">
+          <div class="panel-heading">
+            <div>
+              <h2>可见性诊断</h2>
+              <p id="station-title">3/4 总览</p>
+            </div>
+            <span id="station-index" class="index-pill">01 / 04</span>
+          </div>
+
+          <div class="metric-grid">
+            <article class="metric bad">
+              <span>薄片背边泄漏</span>
+              <strong id="offset-leaks">--</strong>
+              <small>投影偏移 / 采样点</small>
+            </article>
+            <article class="metric good">
+              <span>薄片背边泄漏</span>
+              <strong id="depth-leaks">--</strong>
+              <small>深度相容 / 采样点</small>
+            </article>
+            <article class="metric bad">
+              <span>远场消失距离</span>
+              <strong id="offset-far">--</strong>
+              <small>投影偏移 / 世界单位</small>
+            </article>
+            <article class="metric good">
+              <span>远场消失距离</span>
+              <strong id="depth-far">--</strong>
+              <small>深度相容 / 世界单位</small>
+            </article>
+          </div>
+
+          <section class="diagnostic-section">
+            <h3>误差统计</h3>
+            <table class="stats-table">
+              <thead>
+                <tr><th>指标</th><th>投影偏移</th><th>深度相容</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>漏显可见边</td><td id="offset-missed">--</td><td id="depth-missed">--</td></tr>
+                <tr><td>泄漏隐藏边</td><td id="offset-bleed">--</td><td id="depth-bleed">--</td></tr>
+                <tr><td>贴面线通过率</td><td id="offset-coplanar">--</td><td id="depth-coplanar">--</td></tr>
+                <tr><td>外部遮挡泄漏</td><td id="offset-external">--</td><td id="depth-external">--</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="diagnostic-section">
+            <h3>路径记录</h3>
+            <div class="path-table-wrap">
+              <table class="path-table">
+                <thead>
+                  <tr><th>站点</th><th>偏移漏显</th><th>相容漏显</th><th>背边泄漏</th></tr>
+                </thead>
+                <tbody id="path-results">
+                  <tr><td colspan="4" class="empty">移动到站点后自动记录</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="diagnostic-section note-section">
+            <h3>判据</h3>
+            <p id="depth-note">
+              偏移法需要大于 24 位深度量化的前移量；距离越远，同样的世界偏移越容易被量化吞没。
+            </p>
+            <p id="analysis-note">参考可见性由相机到边采样点的射线与全部实体三角形求交得到。</p>
+          </section>
+        </aside>
+      </main>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
