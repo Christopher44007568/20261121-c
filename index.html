@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#080b10" />
+    <title>Penumbra Lab · 面光源半影实验室</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="icon" href="./favicon.svg" />
+  </head>
+  <body>
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div>
+            <div class="brand-title">PENUMBRA <i>LAB</i></div>
+            <div class="brand-sub">面光源可见性实验室 <span>/</span> RECT AREA LIGHT</div>
+          </div>
+        </div>
+        <div class="top-status">
+          <div class="status-chip" id="gpuStatus">
+            <span class="status-dot"></span>
+            <span class="status-copy">WEBGPU <b>INITIALIZING</b></span>
+          </div>
+          <div class="stat-pair">
+            <span class="stat-label">FRAME</span>
+            <span class="stat-value" id="frameTime">-- ms</span>
+          </div>
+          <div class="stat-pair">
+            <span class="stat-label">SPP</span>
+            <span class="stat-value accent" id="sampleCount">0</span>
+          </div>
+          <button class="icon-button" id="helpButton" title="快捷键与说明" aria-label="帮助">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2"/><path d="M7.8 7.6a2.3 2.3 0 1 1 3.3 2.1c-.8.4-1.1.9-1.1 1.7"/><circle cx="10" cy="14.1" r=".7" class="fill"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="panel controls">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">SCENE CONTROLS</span>
+              <h2>光源与遮挡</h2>
+            </div>
+            <span class="index-tag">01</span>
+          </div>
+
+          <section class="control-section">
+            <div class="section-label">
+              <span>矩形面光源</span>
+              <span class="micro">AREA LIGHT</span>
+            </div>
+            <label class="slider-row" for="lightWidth">
+              <span class="slider-name">横向尺寸 <em>W</em></span>
+              <output id="lightWidthOut">2.40 m</output>
+            </label>
+            <input id="lightWidth" class="range" type="range" min="0.3" max="4.2" step="0.05" value="2.4" />
+            <div class="range-scale"><span>0.3</span><span>4.2 m</span></div>
+            <label class="slider-row" for="lightDepth">
+              <span class="slider-name">纵向尺寸 <em>D</em></span>
+              <output id="lightDepthOut">1.45 m</output>
+            </label>
+            <input id="lightDepth" class="range" type="range" min="0.3" max="3.0" step="0.05" value="1.45" />
+            <div class="light-preview" id="lightPreview"><span></span></div>
+          </section>
+
+          <section class="control-section">
+            <div class="section-label">
+              <span>可移动遮挡板</span>
+              <span class="micro">OCCLUDER</span>
+            </div>
+            <label class="slider-row" for="boardGap">
+              <span class="slider-name">离地距离 <em>h</em></span>
+              <output id="boardGapOut">0.24 m</output>
+            </label>
+            <input id="boardGap" class="range" type="range" min="0.02" max="1.2" step="0.01" value="0.24" />
+            <div class="range-scale"><span>接触</span><span>远离接收面</span></div>
+            <label class="slider-row" for="boardOffset">
+              <span class="slider-name">前后位置 <em>z</em></span>
+              <output id="boardOffsetOut">0.18 m</output>
+            </label>
+            <input id="boardOffset" class="range" type="range" min="-0.8" max="0.8" step="0.01" value="0.18" />
+            <label class="slider-row" for="boardWidth">
+              <span class="slider-name">板宽 <em>B</em></span>
+              <output id="boardWidthOut">2.50 m</output>
+            </label>
+            <input id="boardWidth" class="range" type="range" min="1.2" max="3.2" step="0.05" value="2.5" />
+          </section>
+
+          <section class="control-section">
+            <div class="section-label">
+              <span>采样与时间累积</span>
+              <span class="micro">ESTIMATOR</span>
+            </div>
+            <div class="seg-control" id="sampleRate" role="group" aria-label="每帧采样数">
+              <button data-value="1">1×</button>
+              <button data-value="2">2×</button>
+              <button data-value="4" class="active">4×</button>
+              <button data-value="8">8×</button>
+            </div>
+            <label class="slider-row" for="historyAlpha">
+              <span class="slider-name">时间混合 <em>α</em></span>
+              <output id="historyAlphaOut">0.12</output>
+            </label>
+            <input id="historyAlpha" class="range" type="range" min="0.04" max="0.5" step="0.01" value="0.12" />
+            <div class="range-scale"><span>长历史</span><span>快速响应</span></div>
+            <button class="wide-button" id="resetHistory">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13 6.2A5.2 5.2 0 1 0 13 10"/><path d="M13 2.8v3.7H9.3"/></svg>
+              清空历史缓冲
+            </button>
+          </section>
+
+          <section class="control-section presets-section">
+            <div class="section-label"><span>实验预设</span><span class="micro">PRESETS</span></div>
+            <div class="preset-grid">
+              <button data-preset="contact"><i class="preset-swatch contact"></i>接触硬边</button>
+              <button data-preset="soft"><i class="preset-swatch soft"></i>大面积柔光</button>
+              <button data-preset="offset"><i class="preset-swatch offset"></i>远距遮挡</button>
+            </div>
+          </section>
+        </aside>
+
+        <section class="stage-column">
+          <div class="stage-card">
+            <div class="stage-toolbar">
+              <div class="stage-title">
+                <span class="live-pip"></span>
+                <span>SCENE 01</span>
+                <b>浮空遮挡板 / 地面接收</b>
+              </div>
+              <div class="view-tabs" id="viewTabs" role="group" aria-label="显示模式">
+                <button data-view="beauty" class="active">实时</button>
+                <button data-view="split">参考分屏</button>
+                <button data-view="visibility">可见性</button>
+                <button data-view="samples">历史</button>
+                <button data-view="error">误差</button>
+              </div>
+            </div>
+            <div class="canvas-wrap" id="canvasWrap">
+              <canvas id="gpuCanvas"></canvas>
+              <div class="canvas-vignette"></div>
+              <div class="hud hud-top-left">
+                <span class="hud-kicker">RECT LIGHT</span>
+                <strong id="hudLight">2.40 × 1.45 m</strong>
+              </div>
+              <div class="hud hud-top-right" id="refBadge">
+                <span class="hud-kicker">TEMPORAL</span>
+                <strong id="hudAccum">ACCUMULATING</strong>
+              </div>
+              <div class="split-labels" id="splitLabels">
+                <span>REALTIME · 4 SPP/FRAME</span>
+                <span>OFFLINE REFERENCE · 256 SPP</span>
+              </div>
+              <div class="view-note" id="viewNote"></div>
+              <div class="probe-overlay" id="probeOverlay"></div>
+              <div class="canvas-footer">
+                <div class="scene-legend">
+                  <span><i class="dot light"></i>面光源</span>
+                  <span><i class="dot occluder"></i>遮挡板</span>
+                  <span><i class="dot receiver"></i>接收面</span>
+                </div>
+                <div class="camera-hint"><kbd>拖拽</kbd> 旋转视角 <kbd>滚轮</kbd> 缩放</div>
+              </div>
+              <div class="stage-loading" id="stageLoading">
+                <div class="loader-ring"></div>
+                <strong>正在连接 WebGPU</strong>
+                <span>创建随机可见性累积管线</span>
+              </div>
+              <div class="webgpu-error" id="webgpuError" hidden>
+                <span class="error-code">GPU ADAPTER UNAVAILABLE</span>
+                <strong>此浏览器未提供 WebGPU 适配器</strong>
+                <p>请使用 Chrome / Edge 113+，或在安全环境中开启 WebGPU 与硬件加速。</p>
+              </div>
+            </div>
+            <div class="measurement-strip">
+              <div class="strip-heading">
+                <span class="eyebrow">PENUMBRA PROBES</span>
+                <span class="strip-total" id="stripTotal">--</span>
+              </div>
+              <div class="probe-grid" id="probeGrid"></div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel inspector">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">LIVE ANALYSIS</span>
+              <h2>测量与诊断</h2>
+            </div>
+            <span class="index-tag">02</span>
+          </div>
+
+          <section class="analysis-card chart-card">
+            <div class="card-title">
+              <div><span class="card-kicker">PENUMBRA WIDTH</span><h3>半影宽度剖面</h3></div>
+              <div class="metric-inline"><strong id="growthMetric">--</strong><span>m / m</span></div>
+            </div>
+            <canvas id="profileChart" width="620" height="300"></canvas>
+            <div class="chart-footer">
+              <span><i class="legend-line"></i>5%–95% 可见性宽度</span>
+              <span id="measureHint">正在测量…</span>
+            </div>
+          </section>
+
+          <section class="analysis-card sweep-card">
+            <div class="card-title">
+              <div><span class="card-kicker">PARAMETER SWEEP</span><h3>参数关系扫描</h3></div>
+              <button class="mini-button" id="runSweep">运行 14 组</button>
+            </div>
+            <div class="sweep-grid">
+              <div class="sweep-plot"><canvas id="sweepLight" width="280" height="112"></canvas><span>光源宽度 → 半影</span></div>
+              <div class="sweep-plot"><canvas id="sweepGap" width="280" height="112"></canvas><span>遮挡距离 → 半影</span></div>
+            </div>
+            <div class="slope-row">
+              <span>∂w / ∂W <b id="lightSlope">--</b></span>
+              <span>∂w / ∂h <b id="gapSlope">--</b></span>
+            </div>
+          </section>
+
+          <section class="analysis-card history-card" id="historyCard">
+            <div class="card-title">
+              <div><span class="card-kicker">CUT DETECTION</span><h3>摄像机突变保护</h3></div>
+              <span class="guard-state" id="guardState">ARMED</span>
+            </div>
+            <div class="history-status">
+              <div class="history-orbit" id="historyOrbit"><span></span><i></i></div>
+              <div class="history-copy">
+                <strong id="historyTitle">历史校验正常</strong>
+                <p id="historyDetail">上一帧与当前视图连续，累积缓冲有效。</p>
+              </div>
+            </div>
+            <div class="cut-actions">
+              <button class="cut-button" id="cameraCut">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h4M9.5 8h4M8 2.5v4M8 9.5v4"/></svg>
+                触发镜头突变
+              </button>
+              <label class="switch-row">
+                <span>自动清除历史</span>
+                <input type="checkbox" id="guardToggle" checked />
+                <i></i>
+              </label>
+            </div>
+            <div class="cut-metrics">
+              <span>Δ ANGLE <b id="cutAngle">0.0°</b></span>
+              <span>PURGED <b id="cutCount">0</b></span>
+              <span>LATENCY <b id="cutLatency">--</b></span>
+            </div>
+          </section>
+
+          <section class="analysis-card ref-card">
+            <div class="ref-top">
+              <div>
+                <span class="card-kicker">GROUND TRUTH</span>
+                <h3>离线高采样参考</h3>
+              </div>
+              <span class="ref-state" id="refState">STALE</span>
+            </div>
+            <div class="ref-controls">
+              <button class="wide-button primary" id="computeReference">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 11.5 6.4 8l2.2 2.1L13 5"/><path d="M9.8 5H13v3.2"/></svg>
+                计算 256 SPP 参考
+              </button>
+              <span class="ref-res">HALF RES · LOCKED SCENE</span>
+            </div>
+          </section>
+        </aside>
+      </main>
+      <footer class="footerbar">
+        <span><b>RANDOM VISIBILITY</b> stochastic area sampling · temporally accumulated</span>
+        <span id="gpuInfo">WEBGPU · --</span>
+      </footer>
+    </div>
+    <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+    <dialog class="help-dialog" id="helpDialog">
+      <button class="dialog-close" id="closeHelp" aria-label="关闭">×</button>
+      <span class="eyebrow">QUICK GUIDE</span>
+      <h2>半影实验室</h2>
+      <p>矩形面光源向地面发射随机采样射线。遮挡板将可见性从 1 压到 0，过渡区即半影。</p>
+      <div class="help-grid">
+        <span><kbd>拖拽</kbd> 旋转摄像机</span>
+        <span><kbd>滚轮</kbd> 调整距离</span>
+        <span><kbd>1–5</kbd> 切换视图</span>
+        <span><kbd>R</kbd> 重算参考</span>
+      </div>
+      <p class="help-note">镜头突变会以角速度阈值检测。关闭“自动清除历史”可复现并观察误保留的旧可见性。</p>
+    </dialog>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
