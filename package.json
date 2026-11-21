@@ -1,0 +1,14 @@
+{
+  "name": "software-rasterizer-pixel-history",
+  "version": "1.0.0",
+  "description": "软件光栅化器 + 像素历史面板：齐次裁剪、透视正确插值、top-left 覆盖、LESS 深度与 Alpha 混合",
+  "type": "commonjs",
+  "scripts": {
+    "verify": "node test/verify.js",
+    "crosscheck": "node test/crosscheck.js",
+    "web-parity": "node test/web-parity.mjs",
+    "report": "node src/report.js",
+    "test": "node test/verify.js && node test/crosscheck.js && node test/web-parity.mjs && node test/gpu-crosscheck.js"
+  },
+  "license": "MIT"
+}

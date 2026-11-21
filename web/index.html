@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>像素历史实验室 · 软件光栅化器</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo"></div>
+    <div>
+      <div class="kicker">RASTER / SCOPE</div>
+      <h1>像素历史实验室</h1>
+    </div>
+  </div>
+  <nav class="pipeline">
+    <span>齐次裁剪</span><i>→</i>
+    <span>透视插值</span><i>→</i>
+    <span>深度测试</span><i>→</i>
+    <span class="active">混合 / 写回</span>
+  </nav>
+  <div class="renderer-tag"><span class="dot"></span>SOFTWARE RASTERIZER <b id="fb-size">760 × 480</b></div>
+</header>
+
+<main class="layout">
+  <section class="left">
+    <div class="panel canvas-panel">
+      <div class="panel-head">
+        <div>
+          <div class="kicker">SOFTWARE FRAMEBUFFER</div>
+          <h2>软件光栅化输出</h2>
+        </div>
+        <div class="tools">
+          <label class="switch"><input type="checkbox" id="wire-toggle" checked /><span>覆盖线框</span></label>
+          <button id="reset-view">重置视图</button>
+        </div>
+      </div>
+      <div class="canvas-wrap" id="canvas-wrap">
+        <canvas id="fb-canvas" width="760" height="480"></canvas>
+        <canvas id="overlay-canvas" width="760" height="480"></canvas>
+        <div class="hint" id="click-hint">点选任意像素，按绘制顺序复核</div>
+      </div>
+      <div class="boundary">
+        <div class="kicker">BOUNDARY CASES</div>
+        <div class="case-row" id="case-row"></div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="right">
+    <div class="panel history-panel">
+      <div class="panel-head">
+        <div>
+          <div class="kicker">PIXEL HISTORY</div>
+          <h2 id="pixel-title"># —</h2>
+        </div>
+        <div class="swatch" id="final-swatch" title="最终颜色"></div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta"><span>最终 RGBA</span><b id="m-rgba">—</b></div>
+        <div class="meta"><span>深度缓冲</span><b id="m-depth">—</b></div>
+        <div class="meta"><span>覆盖图元</span><b id="m-cover">—</b></div>
+      </div>
+      <div class="gpu-line">
+        <span><i class="dot"></i>离屏参考对照 · <b id="m-exact">—</b></span>
+        <span id="m-delta">—</span>
+      </div>
+      <div class="panel-head sub">
+        <div>
+          <div class="kicker">DRAW ORDER</div>
+          <h2>片元事件</h2>
+        </div>
+      </div>
+      <div class="events" id="events"></div>
+      <div class="probe">
+        <div class="probe-head"><span>全部图元覆盖探测</span><span>top-left / clip</span></div>
+        <div class="probe-grid" id="probe-grid"></div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<footer class="footer">
+  <span>LESS 深度测试 · SRC_ALPHA / ONE_MINUS_SRC_ALPHA · 不写透明 Alpha</span>
+  <span id="perf">—</span>
+</footer>
+
+<script type="module" src="app.mjs"></script>
+</body>
+</html>

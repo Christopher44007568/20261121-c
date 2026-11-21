@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>gpu harness</title></head>
+<body>
+<script type="module">
+import { renderWebGL } from '../web/gpu-webgl.mjs';
+import { render } from '../web/raster-core.mjs';
+import { scene, CHECK_POINTS } from '../web/scene.mjs';
+
+window.__runGPU = function () {
+  const gpu = renderWebGL();
+  const cpu = render(scene, CHECK_POINTS.map((p) => p.pixel));
+  const n = scene.width * scene.height;
+  let mismatches = 0, maxDelta = 0, sum = 0, large = 0;
+  for (let i = 0; i < n; i++) {
+    let pixelMax = 0;
+    for (let c = 0; c < 3; c++) {   // 只对照 RGB；Alpha 由软件端约定不写回
+      const d = Math.abs(gpu.color[i * 4 + c] - cpu.color[i * 4 + c]);
+      if (d !== 0) mismatches++;
+      maxDelta = Math.max(maxDelta, d);
+      sum += d;
+      pixelMax = Math.max(pixelMax, d);
+    }
+    if (pixelMax > 8) large++;
+  }
+  const points = CHECK_POINTS.map((cp, i) => {
+    const tr = cpu.traces[i];
+    const idx = cp.pixel[1] * scene.width + cp.pixel[0];
+    const gpuRgba = Array.from(gpu.color.slice(idx * 4, idx * 4 + 4));
+    gpuRgba[3] = 255;   // 软件约定 Alpha 不写回，固定 255
+    return {
+      id: cp.id, pixel: cp.pixel, final: tr.final, gpuRgba,
+      exact: JSON.stringify(tr.final) === JSON.stringify(gpuRgba),
+      events: tr.events.map((e) => ({
+        triangle: e.triangleId, clipPolygon: e.clipPolygon, planesHit: e.planesHit,
+        screenBarycentric: e.screenBarycentric, inverseW: e.inverseW,
+        perspectiveWeights: e.perspectiveWeights, depth: e.depth,
+        blended: e.blended, result: e.result,
+      })),
+    };
+  });
+  return {
+    renderer: gpu.renderer,
+    framebuffer: [scene.width, scene.height],
+    comparison: { pixels: n, mismatches, largeDeltaPixels: large, maxDelta, meanDelta: sum / (n * 4) },
+    points,
+  };
+};
+window.__ready = true;
+</script>
+</body></html>
