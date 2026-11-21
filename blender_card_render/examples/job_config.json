@@ -1,0 +1,46 @@
+{
+  "engine": "BLENDER_EEVEE",
+  "resolution": [1024, 1024],
+  "margin_fraction": 0.08,
+  "transparent_film": true,
+  "measure_alpha_margins": true,
+  "uniform_material": true,
+  "material_color": [0.58, 0.62, 0.68, 1.0],
+  "material_roughness": 0.45,
+  "material_metallic": 0.15,
+  "world_strength": 0.55,
+  "samples": 64,
+  "output_dir": "../output",
+  "views": ["front", "right", "top", "iso"],
+  "parts": [
+    {
+      "id": "slender_bar",
+      "file": "geometry/slender_bar.stl",
+      "up_axis": "Z_UP",
+      "unit_scale": 1.0,
+      "origin_offset": [0.0, 0.0, 0.0]
+    },
+    {
+      "id": "flying_antenna",
+      "file": "geometry/flying_antenna.stl",
+      "up_axis": "Z_UP",
+      "unit_scale": 1.0,
+      "origin_offset": [0.0, 0.0, 0.0],
+      "note": "geometry origin is outside the body; antenna ends 22 units away"
+    },
+    {
+      "id": "yup_bracket",
+      "file": "geometry/yup_bracket.glb",
+      "up_axis": "Z_UP",
+      "unit_scale": 1.0
+    },
+    {
+      "id": "yup_pin_axis_map",
+      "file": "geometry/yup_pin.stl",
+      "up_axis": "Y_UP",
+      "axis_map": ["+X", "-Z", "+Y"],
+      "unit_scale": 1.0,
+      "note": "raw STL with no frame convention; axis map converts source Y-up into Blender Z-up"
+    }
+  ]
+}

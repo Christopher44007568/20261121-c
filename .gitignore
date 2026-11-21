@@ -1,0 +1,9 @@
+# Portable Blender and downloaded system libraries
+/work/
+
+# Rendered artifacts (regenerate with run_example.sh)
+/blender_card_render/output/
+
+# Python caches
+__pycache__/
+*.pyc
