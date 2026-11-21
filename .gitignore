@@ -1,0 +1,5 @@
+csm_diag
+src/*.o
+src/*.d
+*.o
+*.d
