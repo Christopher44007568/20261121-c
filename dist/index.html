@@ -1,0 +1,1856 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>整数网格面状布尔操作</title>
+    <style>
+:root {
+  color-scheme: light;
+  font-family: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  background: #f5f6f8;
+  color: #1f2430;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.layout {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+header h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+}
+
+.subtitle {
+  margin: 0 0 20px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #e3e6ea;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+}
+
+.toolbar label {
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toolbar select {
+  padding: 6px 8px;
+  border: 1px solid #cfd4dc;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.operations {
+  display: flex;
+  gap: 6px;
+}
+
+.operations button {
+  border: 1px solid #cfd4dc;
+  background: #f8fafc;
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.operations button.active,
+.operations button:hover {
+  background: #2456a6;
+  border-color: #2456a6;
+  color: #fff;
+}
+
+.check input {
+  accent-color: #2456a6;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 18px;
+}
+
+#stage {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e3e6ea;
+  border-radius: 10px;
+}
+
+.side {
+  background: #fff;
+  border: 1px solid #e3e6ea;
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 13px;
+}
+
+.side h2 {
+  font-size: 14px;
+  margin: 16px 0 8px;
+}
+
+.side h2:first-child {
+  margin-top: 0;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.metrics div {
+  background: #f5f7fb;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metrics span {
+  color: #6b7280;
+}
+
+.metrics strong {
+  font-size: 16px;
+}
+
+.diagnostics {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.diagnostics li {
+  padding: 6px 8px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.diagnostics .error {
+  background: #fdecea;
+}
+
+.diagnostics .warning {
+  background: #fff6e0;
+}
+
+.diagnostics .info,
+.diagnostics .ok {
+  background: #eef6ee;
+}
+
+.diagnostics code {
+  font-weight: 600;
+}
+
+.legend {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.input-a {
+  background: rgba(60, 110, 200, 0.35);
+}
+
+.input-b {
+  background: rgba(210, 120, 40, 0.35);
+}
+
+.result {
+  background: rgba(36, 86, 166, 0.4);
+}
+
+.hole {
+  background: #c0392b;
+}
+
+.cancelled {
+  background: repeating-linear-gradient(45deg, #c0392b 0 4px, #fff 4px 8px);
+}
+
+@media (max-width: 880px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+}
+
+</style>
+  </head>
+  <body>
+    <main class="layout">
+      <header>
+        <h1>整数网格面状布尔操作</h1>
+        <p class="subtitle">精确有理运算 · 相切 / 共享边 / 嵌套洞 / 近阈值量化</p>
+      </header>
+
+      <section class="toolbar">
+        <label>
+          夹具
+          <select id="fixture"></select>
+        </label>
+        <div class="operations">
+          <button data-op="union" class="active">并集</button>
+          <button data-op="intersection">交集</button>
+          <button data-op="difference">差集</button>
+          <button data-op="xor">异或</button>
+        </div>
+        <label class="check"><input type="checkbox" id="toggle-degenerate" checked /> 退化边</label>
+        <label class="check"><input type="checkbox" id="toggle-grid" checked /> 网格</label>
+      </section>
+
+      <section class="content">
+        <canvas id="stage" width="640" height="560"></canvas>
+        <aside class="side">
+          <h2>指标</h2>
+          <div id="metrics" class="metrics"></div>
+          <h2>诊断</h2>
+          <ul id="diagnostics" class="diagnostics"></ul>
+          <h2>图例</h2>
+          <ul class="legend">
+            <li><span class="swatch input-a"></span>输入集合 A</li>
+            <li><span class="swatch input-b"></span>输入集合 B</li>
+            <li><span class="swatch result"></span>布尔结果</li>
+            <li><span class="swatch hole"></span>洞边界</li>
+            <li><span class="swatch cancelled"></span>抵消 / 退化边</li>
+          </ul>
+        </aside>
+      </section>
+    </main>
+    <script type="module">
+// module: ./src/diagnostics.js
+const m0 = (() => {
+// Collects structured, serialisable diagnostics instead of throwing away
+// context. Codes use E_ (blocking), W_ (recovered automatically), I_ (info).
+
+const SEVERITY = {
+  E_NON_FINITE: "error",
+  E_SELF_INTERSECT: "error",
+  E_TRIVIAL_INPUT: "error",
+  E_AREA_IDENTITY: "error",
+  W_NEAR_THRESHOLD: "warning",
+  W_COLLAPSED_EDGE: "warning",
+  W_DEGENERATE_RING: "warning",
+  W_UNWOUND_RING: "warning",
+  W_SPLIT_INTERSECTION: "warning",
+  W_ORPHAN_HOLE: "warning",
+  W_AREA_MISMATCH: "warning",
+  I_ZERO_RESULT: "info",
+  I_TOUCH_POINT: "info",
+};
+
+class Diagnostics {
+  constructor() {
+    this.entries = [];
+  }
+
+  add(severity, code, detail = {}) {
+    this.entries.push({ severity, code, detail, message: formatMessage(code, detail) });
+  }
+
+  error(code, detail) {
+    this.add("error", code, detail);
+  }
+
+  warn(code, detail) {
+    this.add("warning", code, detail);
+  }
+
+  info(code, detail) {
+    this.add("info", code, detail);
+  }
+
+  hasErrors() {
+    return this.entries.some((e) => e.severity === "error");
+  }
+
+  byCode(code) {
+    return this.entries.filter((e) => e.code === code);
+  }
+
+  toJSON() {
+    return this.entries;
+  }
+
+  text() {
+    return this.entries
+      .map((e) => `${e.severity[0].toUpperCase()} ${e.code}: ${e.message}`)
+      .join("\n");
+  }
+}
+
+function formatMessage(code, d) {
+  const where = d.set !== undefined
+    ? `set${d.set}/poly${d.polygon ?? "?"}/ring${d.ring ?? "?"}`
+    : "";
+  switch (code) {
+    case "E_NON_FINITE":
+      return `${where} vertex ${d.vertex} is not finite (${d.x}, ${d.y})`;
+    case "E_SELF_INTERSECT":
+      return `${where} ring self-intersects at (${d.x}, ${d.y})`;
+    case "E_TRIVIAL_INPUT":
+      return `operation needs at least two polygon sets; got ${d.given}`;
+    case "W_NEAR_THRESHOLD":
+      return `${where} vertex ${d.vertex} ${d.axis}=${d.scaledValue.toFixed(4)} is ${d.distanceToBoundary.toFixed(4)} from a half-unit boundary -> ${d.snappedTo}`;
+    case "W_COLLAPSED_EDGE":
+      return `${where} collapsed duplicates on snapping: ${d.before} -> ${d.after} vertices`;
+    case "W_DEGENERATE_RING":
+      return `${where} ring has only ${d.distinctVertices} distinct vertices and was dropped`;
+    case "W_SPLIT_INTERSECTION":
+      return `edge intersection at (${d.x}, ${d.y}) split into atomic edges`;
+    case "W_UNWOUND_RING":
+      return `${where} ring orientation corrected to ${d.expected}`;
+    case "W_ORPHAN_HOLE":
+      return `inner ring ${d.ring} is not contained in any outer ring`;
+    case "W_AREA_MISMATCH":
+      return `polygon ${d.polygon} triangulated area ${d.triangulated} != expected ${d.expected}`;
+    case "I_ZERO_RESULT":
+      return "operation produced an empty region";
+    case "I_TOUCH_POINT":
+      return `tangent contact at (${d.x}, ${d.y})`;
+    default:
+      return JSON.stringify(d);
+  }
+}
+
+return { SEVERITY, Diagnostics };
+})();
+
+// module: ./src/rational.js
+const m1 = (() => {
+// Exact rational arithmetic on BigInt. Fractions are kept reduced with a
+// positive denominator so equality comparisons stay canonical.
+
+function gcd(a, b) {
+  a = a < 0n ? -a : a;
+  b = b < 0n ? -b : b;
+  while (b !== 0n) {
+    const t = a % b;
+    a = b;
+    b = t;
+  }
+  return a || 1n;
+}
+
+class Q {
+  constructor(n, d = 1n) {
+    if (d === 0n) throw new Error("rational with zero denominator");
+    if (d < 0n) {
+      n = -n;
+      d = -d;
+    }
+    const g = gcd(n, d);
+    this.n = n / g;
+    this.d = d / g;
+  }
+
+  static of(n) {
+    return new Q(BigInt(n));
+  }
+
+  add(o) {
+    return new Q(this.n * o.d + o.n * this.d, this.d * o.d);
+  }
+
+  sub(o) {
+    return new Q(this.n * o.d - o.n * this.d, this.d * o.d);
+  }
+
+  mul(o) {
+    return new Q(this.n * o.n, this.d * o.d);
+  }
+
+  neg() {
+    return new Q(-this.n, this.d);
+  }
+
+  cmp(o) {
+    const l = this.n * o.d;
+    const r = o.n * this.d;
+    return l < r ? -1 : l > r ? 1 : 0;
+  }
+
+  equals(o) {
+    return this.n === o.n && this.d === o.d;
+  }
+
+  isZero() {
+    return this.n === 0n;
+  }
+
+  toNumber() {
+    return Number(this.n) / Number(this.d);
+  }
+
+  toString() {
+    return this.d === 1n ? `${this.n}` : `${this.n}/${this.d}`;
+  }
+}
+
+const q = (n, d) => new Q(BigInt(n), BigInt(d));
+
+// Cross product of vectors (b-a) x (c-a), all coordinates rational.
+function cross(a, b, c) {
+  const ux = b.x.sub(a.x);
+  const uy = b.y.sub(a.y);
+  const vx = c.x.sub(a.x);
+  const vy = c.y.sub(a.y);
+  return ux.mul(vy).sub(uy.mul(vx));
+}
+
+return { Q, q, cross };
+})();
+
+// module: ./src/quantize.js
+const m2 = (() => {
+const Q = m1.Q;
+
+// Snaps floating-point coordinates onto an integer grid.
+//
+// Diagnostics emitted here:
+//   E_NON_FINITE        coordinate is NaN/Infinity (feature rejected)
+//   W_NEAR_THRESHOLD    scaled coordinate sits close to a k+0.5 rounding boundary
+//   W_COLLAPSED_EDGE    an edge collapsed to a point after snapping
+//   W_DEGENERATE_RING   a ring has fewer than 3 distinct vertices
+
+const DEFAULT_NEAR_EPS = 0.025; // fraction of one grid unit
+
+function roundHalfUp(v) {
+  // Deterministic half-up rounding; ties at +0.5 go up, ties at -0.5 go down.
+  return v >= 0 ? Math.floor(v + 0.5) : Math.ceil(v - 0.5);
+}
+
+function quantize(polygonSets, options = {}, diag) {
+  const scale = options.scale ?? 1;
+  if (!Number.isInteger(scale) || scale <= 0) {
+    throw new Error("quantize: scale must be a positive integer");
+  }
+  const nearEps = options.nearEps ?? DEFAULT_NEAR_EPS;
+
+  const out = polygonSets.map((set, setIndex) => ({
+    id: set.id ?? `set-${setIndex}`,
+    polygons: (set.polygons || []).map((poly, polyIndex) => {
+      const rings = normalizeRings(poly).map((ring, ringIndex) =>
+        snapRing(ring, scale, nearEps, diag, setIndex, polyIndex, ringIndex),
+      );
+      return { id: poly.id ?? `p-${setIndex}-${polyIndex}`, rings };
+    }),
+  }));
+  return out;
+}
+
+function normalizeRings(poly) {
+  if (Array.isArray(poly.rings)) return poly.rings;
+  if (poly.outer) return [poly.outer, ...(poly.holes || [])];
+  throw new Error("polygon requires either {rings} or {outer, holes}");
+}
+
+function snapRing(ring, scale, nearEps, diag, setIndex, polyIndex, ringIndex) {
+  const loc = { set: setIndex, polygon: polyIndex, ring: ringIndex };
+  const snapped = [];
+  for (const [i, pt] of ring.entries()) {
+    const x = Number(pt[0]);
+    const y = Number(pt[1]);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      diag.error("E_NON_FINITE", { ...loc, vertex: i, x: pt[0], y: pt[1] });
+      throw new Error(`non-finite coordinate at set${setIndex}/poly${polyIndex}/ring${ringIndex}#${i}`);
+    }
+    const sx = x * scale;
+    const sy = y * scale;
+    flagNearThreshold(sx, "x", i, loc, nearEps, diag);
+    flagNearThreshold(sy, "y", i, loc, nearEps, diag);
+    snapped.push({ x: new Q(BigInt(roundHalfUp(sx))), y: new Q(BigInt(roundHalfUp(sy))) });
+  }
+
+  const cleaned = [];
+  for (const p of snapped) {
+    const last = cleaned[cleaned.length - 1];
+    if (!last || last.x !== p.x || last.y !== p.y) cleaned.push(p);
+  }
+  if (cleaned.length > 1) {
+    const first = cleaned[0];
+    const last = cleaned[cleaned.length - 1];
+    if (first.x === last.x && first.y === last.y) cleaned.pop();
+  }
+  if (cleaned.length !== snapped.length) {
+    diag.warn("W_COLLAPSED_EDGE", {
+      ...loc,
+      before: snapped.length,
+      after: cleaned.length,
+    });
+  }
+  if (cleaned.length < 3) {
+    diag.warn("W_DEGENERATE_RING", { ...loc, distinctVertices: cleaned.length });
+  }
+  return cleaned;
+}
+
+function flagNearThreshold(scaled, axis, vertex, loc, nearEps, diag) {
+  const nearest = roundHalfUp(scaled);
+  // The two half-integer boundaries nearest to the rounded value.
+  const dist = Math.min(Math.abs(scaled - (nearest - 0.5)), Math.abs(scaled - (nearest + 0.5)));
+  if (dist < nearEps) {
+    diag.warn("W_NEAR_THRESHOLD", {
+      ...loc,
+      vertex,
+      axis,
+      scaledValue: scaled,
+      distanceToBoundary: dist,
+      snappedTo: nearest,
+    });
+  }
+}
+
+return { DEFAULT_NEAR_EPS, quantize };
+})();
+
+// module: ./src/geometry-int.js
+const m3 = (() => {
+// Exact integer/rational planar geometry primitives.
+
+const Q = m1.Q;
+
+function iPoint(x, y) {
+  return { x: new Q(BigInt(x)), y: new Q(BigInt(y)) };
+}
+
+function orient(a, b, c) {
+  // >0: c left of a->b (CCW), 0: collinear, <0: right
+  const v = (b.x.sub(a.x)).mul(c.y.sub(a.y)).sub(
+    (b.y.sub(a.y)).mul(c.x.sub(a.x)),
+  );
+  return v.isZero() ? 0 : v.n > 0n ? 1 : -1;
+}
+
+function onBoundingBox(p, a, b) {
+  const minX = a.x.cmp(b.x) <= 0 ? a.x : b.x;
+  const maxX = a.x.cmp(b.x) >= 0 ? a.x : b.x;
+  const minY = a.y.cmp(b.y) <= 0 ? a.y : b.y;
+  const maxY = a.y.cmp(b.y) >= 0 ? a.y : b.y;
+  return (
+    p.x.cmp(minX) >= 0 && p.x.cmp(maxX) <= 0 &&
+    p.y.cmp(minY) >= 0 && p.y.cmp(maxY) <= 0
+  );
+}
+
+function pointOnSegment(p, a, b) {
+  return orient(a, b, p) === 0 && onBoundingBox(p, a, b);
+}
+
+// Intersection between two rational segments.
+// Returns { proper: bool, points: [rationalPoint, ...] }.
+// A proper crossing yields one interior point; collinear overlap yields the
+// up-to-two overlap endpoints (may be a single touch point).
+function segmentIntersection(a, b, c, d) {
+  const o1 = orient(a, b, c);
+  const o2 = orient(a, b, d);
+  const o3 = orient(c, d, a);
+  const o4 = orient(c, d, b);
+
+  if (o1 !== o2 && o1 !== 0 && o2 !== 0) {
+    return { proper: true, points: [crossingPoint(a, b, c, d)] };
+  }
+
+  // Collinear / T-junction / endpoint touch: test every endpoint against the
+  // opposite segment's interior-inclusive range.
+  const touch = [];
+  if (o1 === 0 && onBoundingBox(c, a, b)) touch.push(c);
+  if (o2 === 0 && onBoundingBox(d, a, b)) touch.push(d);
+  if (o3 === 0 && onBoundingBox(a, c, d)) touch.push(a);
+  if (o4 === 0 && onBoundingBox(b, c, d)) touch.push(b);
+  if (touch.length) {
+    return { proper: false, points: dedupePoints(touch) };
+  }
+  return { proper: false, points: [] };
+}
+
+function dedupePoints(points) {
+  const out = [];
+  for (const p of points) {
+    if (!out.some((q) => q.x.equals(p.x) && q.y.equals(p.y))) out.push(p);
+  }
+  return out;
+}
+
+function crossingPoint(a, b, c, d) {
+  // Solve a + t(b-a) = c + s(d-c) using rational cross products.
+  const rx = b.x.sub(a.x);
+  const ry = b.y.sub(a.y);
+  const sx = d.x.sub(c.x);
+  const sy = d.y.sub(c.y);
+  const denom = rx.mul(sy).sub(ry.mul(sx)); // r x s, non-zero here
+  const cax = c.x.sub(a.x);
+  const cay = c.y.sub(a.y);
+  const num = cax.mul(sy).sub(cay.mul(sx));
+  const tq = new Q(num.n * denom.d, num.d * denom.n);
+  return {
+    x: a.x.add(rx.mul(tq)),
+    y: a.y.add(ry.mul(tq)),
+  };
+}
+
+// 0..1 rational parameter of p on segment a->b; p is assumed collinear.
+function segmentParam(p, a, b) {
+  const dx = b.x.sub(a.x);
+  const dy = b.y.sub(a.y);
+  const axis = dx.isZero() ? p.y.sub(a.y) : p.x.sub(a.x);
+  const span = dx.isZero() ? dy : dx;
+  return new Q(axis.n * span.d, axis.d * span.n);
+}
+
+function pointsEqual(p, q) {
+  return p.x.equals(q.x) && p.y.equals(q.y);
+}
+
+return { iPoint, orient, pointOnSegment, segmentIntersection, segmentParam, pointsEqual };
+})();
+
+// module: ./src/arrangement.js
+const m4 = (() => {
+// Builds a planar arrangement: every input edge is cut at every intersection
+// (proper crossing, T-junction, collinear overlap, tangent), so the output
+// atomic edges have no interior intersections. All arithmetic stays rational.
+
+const Q = m1.Q;
+const orient = m3.orient;
+const pointOnSegment = m3.pointOnSegment;
+const pointsEqual = m3.pointsEqual;
+const segmentIntersection = m3.segmentIntersection;
+const segmentParam = m3.segmentParam;
+
+function buildArrangement(sets, diag) {
+  const rawEdges = collectEdges(sets, diag);
+  const splitEdges = splitAllEdges(rawEdges, diag);
+  return mergeAtomicEdges(splitEdges);
+}
+
+function collectEdges(sets, diag) {
+  const edges = [];
+  for (const set of sets) {
+    for (const poly of set.polygons) {
+      const rings = poly.rings.filter((ring) => ring.length >= 3);
+      for (let ringIndex = 0; ringIndex < rings.length; ringIndex++) {
+        const ring = rings[ringIndex];
+        const signedArea = ringArea(ring);
+        const expected = ringIndex === 0 ? 1 : -1;
+        const orientation = signedArea.n > 0n ? 1 : -1;
+        if (orientation !== expected) {
+          diag.warn("W_UNWOUND_RING", {
+            set: sets.indexOf(set),
+            polygon: poly.id,
+            ring: ringIndex,
+            expected: expected === 1 ? "CCW" : "CW",
+          });
+        }
+        // The winding jump across a directed boundary edge is always +1 from
+        // its right face to its left face; ring orientation is already carried
+        // by the edge direction itself, so no extra sign factor is needed.
+        void orientation;
+        for (let i = 0; i < ring.length; i++) {
+          const a = ring[i];
+          const b = ring[(i + 1) % ring.length];
+          edges.push({
+            a,
+            b,
+            setId: set.id,
+            ringIndex,
+            polygonId: poly.id,
+            sign: 1,
+            direction: 1,
+          });
+        }
+      }
+    }
+  }
+  return edges;
+}
+
+function ringArea(ring) {
+  // Doubled signed area, exact integer (or rational) value.
+  let area = new Q(0n);
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i];
+    const b = ring[(i + 1) % ring.length];
+    area = area.add(a.x.mul(b.y).sub(a.y.mul(b.x)));
+  }
+  return area;
+}
+
+function splitAllEdges(rawEdges, diag) {
+  const out = [];
+  for (let i = 0; i < rawEdges.length; i++) {
+    const edge = rawEdges[i];
+    const cuts = new Map();
+    cuts.set(pointKey(edge.a), edge.a);
+    cuts.set(pointKey(edge.b), edge.b);
+
+    for (let j = 0; j < rawEdges.length; j++) {
+      if (i === j) continue;
+      const other = rawEdges[j];
+      const hit = segmentIntersection(edge.a, edge.b, other.a, other.b);
+      if (!hit.points.length) continue;
+      for (const p of hit.points) {
+        if (pointOnSegment(p, edge.a, edge.b)) {
+          const key = pointKey(p);
+          if (!cuts.has(key)) {
+            cuts.set(key, p);
+            if (hit.proper || !isEndpoint(p, edge)) {
+              diag.info("W_SPLIT_INTERSECTION", {
+                x: p.x.toString(),
+                y: p.y.toString(),
+              });
+            }
+          }
+        }
+      }
+    }
+
+    const ordered = [...cuts.values()].sort((p, q) =>
+      segmentParam(p, edge.a, edge.b).cmp(segmentParam(q, edge.a, edge.b)),
+    );
+    for (let k = 0; k < ordered.length - 1; k++) {
+      if (pointsEqual(ordered[k], ordered[k + 1])) continue;
+      out.push({
+        a: ordered[k],
+        b: ordered[k + 1],
+        source: {
+          setId: edge.setId,
+          polygonId: edge.polygonId,
+          ringIndex: edge.ringIndex,
+          sign: edge.sign,
+          direction: edge.direction,
+        },
+      });
+    }
+  }
+  return out;
+}
+
+function isEndpoint(p, edge) {
+  return pointsEqual(p, edge.a) || pointsEqual(p, edge.b);
+}
+
+function mergeAtomicEdges(atomic) {
+  const merged = new Map();
+  for (const e of atomic) {
+    const key = edgeKey(e.a, e.b);
+    let entry = merged.get(key);
+    if (!entry) {
+      // Keep the first-seen atomic edge orientation so all downstream
+      // winding probes see one consistent directed edge.
+      entry = { a: e.a, b: e.b, sources: [], key };
+      merged.set(key, entry);
+    }
+    const sameDirection = pointKey(e.a) === pointKey(entry.a);
+    const direction = sameDirection ? 1 : -1;
+    // Winding jump weight is +1 across a material boundary for the retained
+    // directed edge; direction records source traversal for cancellation only.
+    entry.sources.push({ ...e.source, direction, sign: 1 });
+  }
+  return [...merged.values()];
+}
+
+function pointKey(p) {
+  return `${p.x.toString()}|${p.y.toString()}`;
+}
+
+function edgeKey(a, b) {
+  const ka = pointKey(a);
+  const kb = pointKey(b);
+  return ka < kb ? `${ka}#${kb}` : `${kb}#${ka}`;
+}
+
+return { buildArrangement, ringArea, pointKey, edgeKey };
+})();
+
+// module: ./src/split-touch.js
+const m5 = (() => {
+// A boundary walk can revisit a vertex where two regions only touch (a pinch).
+// Such a self-touching loop is weakly simple and cannot be ear-clipped, so we
+// split it at every repeated vertex into independent simple loops.
+
+const pointKey = m4.pointKey;
+
+function splitSelfTouchingLoops(loops) {
+  const out = [];
+  for (const loop of loops) {
+    const firstSeen = new Map();
+    let current = [];
+    for (const p of loop) {
+      const key = pointKey(p);
+      if (firstSeen.has(key)) {
+        current.push(p);
+        out.push(current);
+        current = [p];
+        firstSeen.clear();
+        firstSeen.set(key, 0);
+      } else {
+        firstSeen.set(key, current.length);
+        current.push(p);
+      }
+    }
+    if (current.length >= 3) out.push(current);
+  }
+  return out.filter((loop) => loop.length >= 3 && new Set(loop.map(pointKey)).size >= 3);
+}
+
+return { splitSelfTouchingLoops };
+})();
+
+// module: ./src/winding.js
+const m6 = (() => {
+// Exact winding-number evaluation on the arrangement and boolean edge
+// selection. Every atomic edge has a clean face on each side, so a symbolic
+// epsilon probe yields exact, robust winding numbers (no floating fuzz).
+
+const Q = m1.Q;
+const pointKey = m4.pointKey;
+const orient = m3.orient;
+
+const ZERO = new Q(0n);
+
+function computeFaceWinding(edges, sourceSegments, rule = "nonzero") {
+  for (const edge of edges) {
+    const probe = leftProbe(edge, sourceSegments);
+    const wLeft = windingBySet(probe, sourceSegments, rule);
+
+    const jump = {};
+    for (const src of edge.sources) {
+      jump[src.setId] = (jump[src.setId] ?? 0) + src.sign;
+    }
+    const wRight = {};
+    for (const [setId, w] of Object.entries(wLeft)) {
+      wRight[setId] = w - (jump[setId] ?? 0);
+    }
+    edge.wLeft = wLeft;
+    edge.wRight = wRight;
+    edge.jump = jump;
+  }
+  return edges;
+}
+
+// Pick p = midpoint + epsilon * (-dy, dx) / len, with epsilon strictly smaller
+// than every positive vertex distance to the supporting line. This keeps the
+// probe inside the left-hand face without ever landing on another edge.
+function leftProbe(edge, sourceSegments) {
+  const dx = edge.b.x.sub(edge.a.x);
+  const dy = edge.b.y.sub(edge.a.y);
+  const len2 = dx.mul(dx).add(dy.mul(dy));
+  const mx = edge.a.x.add(edge.b.x).mul(new Q(1n, 2n));
+  const my = edge.a.y.add(edge.b.y).mul(new Q(1n, 2n));
+
+  let eps = new Q(1n, 2n);
+  for (const seg of sourceSegments) {
+    for (const p of [seg.a, seg.b]) {
+      const cross = dx.mul(p.y.sub(edge.a.y)).sub(dy.mul(p.x.sub(edge.a.x)));
+      if (cross.isZero()) continue;
+      // Line distance = |cross|/sqrt(len2), offset magnitude = eps*sqrt(len2);
+      // equal when eps = |cross|/len2 (the Q quotient below keeps it exact).
+      // Keep the strict minimum so the probe never reaches another edge.
+      const absCross = cross.n < 0n ? cross.neg() : cross;
+      // Q quotient |cross| / len2, kept exact; eps scales the unit normal.
+      const candidate = new Q(
+        absCross.n * len2.d,
+        absCross.d * len2.n,
+      );
+      if (candidate.cmp(eps) < 0) eps = candidate;
+    }
+  }
+  eps = eps.mul(new Q(1n, 2n));
+
+  return {
+    x: mx.add(eps.mul(dy.neg())),
+    y: my.add(eps.mul(dx)),
+  };
+}
+
+function windingBySet(point, sourceSegments, rule) {
+  const result = {};
+  for (const seg of sourceSegments) {
+    const w = result[seg.setId] ?? 0;
+    result[seg.setId] = w + pointWindingContribution(point, seg);
+  }
+  if (rule === "evenodd") {
+    for (const id of Object.keys(result)) result[id] = Math.abs(result[id]) % 2;
+  }
+  return result;
+}
+
+// Standard +1/-1 ray-cast winding number with a +x horizontal ray and
+// half-open edge convention, evaluated on exact rationals.
+function pointWindingContribution(p, seg) {
+  const { a, b } = seg;
+  const ay = a.y.cmp(p.y);
+  const by = b.y.cmp(p.y);
+  // Standard winding number on a +x ray. Upward crossing on the ray adds +1
+  // (p strictly right of the edge, orient>0); downward crossing adds -1.
+  if (ay <= 0 && by > 0 && orient(a, b, p) > 0) return 1;
+  if (ay > 0 && by <= 0 && orient(a, b, p) < 0) return -1;
+  return 0;
+}
+
+function pointWinding(point, rings) {
+  let w = 0;
+  for (const ring of rings) {
+    for (let i = 0; i < ring.length; i++) {
+      const a = ring[i];
+      const b = ring[(i + 1) % ring.length];
+      w += pointWindingContribution(point, { a, b });
+    }
+  }
+  return w;
+}
+
+function selectBoundaryEdges(edges, operation, setIds, rule = "nonzero") {
+  const inside = (w) => (rule === "evenodd" ? (w % 2 !== 0 ? 1 : 0) : (w === 0 ? 0 : 1));
+  const keep = [];
+
+  for (const edge of edges) {
+    const left = setIds.map((id) => inside(edge.wLeft[id] ?? 0));
+    const right = setIds.map((id) => inside(edge.wRight[id] ?? 0));
+    let inL;
+    let inR;
+    if (operation === "union") {
+      inL = left.some(Boolean);
+      inR = right.some(Boolean);
+    } else if (operation === "intersection") {
+      inL = left.every(Boolean);
+      inR = right.every(Boolean);
+    } else if (operation === "difference") {
+      inL = left[0] === 1 && left.slice(1).every((v) => v === 0);
+      inR = right[0] === 1 && right.slice(1).every((v) => v === 0);
+    } else if (operation === "xor") {
+      inL = left.filter(Boolean).length % 2 === 1;
+      inR = right.filter(Boolean).length % 2 === 1;
+    } else {
+      throw new Error(`unknown operation: ${operation}`);
+    }
+    if (inL === inR) continue;
+    keep.push({ edge, direction: inL ? 1 : -1 });
+  }
+  return keep;
+}
+
+// Assemble oriented boundary edges into closed loops by angle-ordered pairing
+// at every vertex, which stays well-defined at tangent/pinch vertices.
+function assembleLoops(boundary) {
+  const outgoing = new Map();
+  const directed = boundary.map(({ edge, direction }) => {
+    const a = direction === 1 ? edge.a : edge.b;
+    const b = direction === 1 ? edge.b : edge.a;
+    return { a, b, used: false, edge };
+  });
+
+  for (const h of directed) {
+    const key = pointKey(h.a);
+    if (!outgoing.has(key)) outgoing.set(key, []);
+    outgoing.get(key).push(h);
+  }
+
+  const loops = [];
+  for (const start of directed) {
+    if (start.used) continue;
+    const loop = [];
+    let current = start;
+    do {
+      current.used = true;
+      loop.push(current.a);
+      const candidates = outgoing.get(pointKey(current.b));
+      current = pairNext(current, candidates);
+      if (!current) break;
+    } while (current !== start);
+    loops.push(loop);
+  }
+  return loops;
+}
+
+function pairNext(incoming, candidates) {
+  // Face-cycle rule for a planar subdivision: at the shared vertex, list all
+  // outgoing rays in CCW angle order and follow the ray immediately clockwise
+  // of the reverse-incoming ray. That keeps the same face on the left of the
+  // walk and correctly separates loops that meet only at a pinch vertex.
+  const dx = incoming.b.x.sub(incoming.a.x);
+  const dy = incoming.b.y.sub(incoming.a.y);
+  const rays = candidates
+    .filter((h) => !h.used)
+    .map((h) => ({
+      h,
+      vx: h.b.x.sub(h.a.x),
+      vy: h.b.y.sub(h.a.y),
+    }));
+  const incomingRay = { vx: dx.neg(), vy: dy.neg() };
+  const sorted = rays.slice().sort((r1, r2) => ccwCompare(r1, r2));
+  const same = rays.find((r) => sameRay(r, incomingRay));
+  if (same) return same.h;
+  if (!sorted.length) return null;
+  // Standard half-edge face walk: take the outgoing ray immediately clockwise
+  // (the CCW-order predecessor) of the reverse-incoming ray. That keeps the
+  // same face on the left and closes each face independently even where two
+  // regions meet only at a tangent or pinch vertex.
+  let index = 0;
+  while (index < sorted.length && ccwCompare(sorted[index], incomingRay) <= 0) index++;
+  const pick = sorted[(index - 1 + sorted.length) % sorted.length];
+  return pick.h;
+}
+
+function half(v) {
+  // Standard atan2 half-plane split: upper half (y>0, or y==0 with x>0) is
+  // sector 0, lower half is sector 1. This makes the CCW ordering continuous
+  // across the +/-x axes so predecessor lookup is a true circular order.
+  const upper = v.vy.cmp(ZERO) > 0 || (v.vy.isZero() && v.vx.cmp(ZERO) >= 0);
+  return upper ? 0 : 1;
+}
+
+function ccwCompare(r1, r2) {
+  const h1 = half(r1);
+  const h2 = half(r2);
+  if (h1 !== h2) return h1 - h2;
+  const cross = r1.vx.mul(r2.vy).sub(r1.vy.mul(r2.vx));
+  // cross>0 means r2 is CCW of r1, so r1 sorts first and the comparator
+  // returns negative; collinear rays compare equal for ordering purposes.
+  return cross.neg().cmp(ZERO);
+}
+
+function sameRay(r1, r2) {
+  return (
+    r1.vx.mul(r2.vy).sub(r1.vy.mul(r2.vx)).isZero() &&
+    r1.vx.mul(r2.vx).add(r1.vy.mul(r2.vy)).cmp(ZERO) > 0
+  );
+}
+
+return { computeFaceWinding, pointWinding, selectBoundaryEdges, assembleLoops };
+})();
+
+// module: ./src/polygon.js
+const m7 = (() => {
+// Turn raw loops into triangulable polygons (outer CCW + holes CW), classify
+// degenerate geometry, and verify triangulability with an exact ear clipper.
+
+const Q = m1.Q;
+const orient = m3.orient;
+const pointOnSegment = m3.pointOnSegment;
+const pointKey = m4.pointKey;
+
+const ZERO = new Q(0n);
+
+function signedArea2(ring) {
+  let area = ZERO;
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i];
+    const b = ring[(i + 1) % ring.length];
+    area = area.add(a.x.mul(b.y).sub(a.y.mul(b.x)));
+  }
+  return area;
+}
+
+// Remove collinear arrangement-split vertices from an output ring while
+// preserving its shape, orientation and exact area.
+function simplifyRing(ring) {
+  const out = ring.slice();
+  let changed = true;
+  while (changed && out.length > 3) {
+    changed = false;
+    for (let i = 0; i < out.length; i++) {
+      const prev = out[(i - 1 + out.length) % out.length];
+      const cur = out[i];
+      const next = out[(i + 1) % out.length];
+      if (orient(prev, cur, next) === 0 && pointOnSegment(cur, prev, next)) {
+        out.splice(i, 1);
+        changed = true;
+        break;
+      }
+    }
+  }
+  return out;
+}
+
+function classifyLoops(loops, diag) {
+  const outer = [];
+  const inner = [];
+  for (const [index, loop] of loops.entries()) {
+    const area2 = signedArea2(loop);
+    if (area2.isZero()) {
+      diag.warn("W_DEGENERATE_RING", { ring: index, distinctVertices: loop.length });
+      continue;
+    }
+    if (area2.n > 0n) outer.push({ ring: loop, area2, index });
+    else inner.push({ ring: loop, area2: area2.neg(), index });
+  }
+
+  const polygons = outer.map((o) => ({ outer: o.ring, holes: [], area2: o.area2 }));
+  for (const hole of inner) {
+    const host = polygons
+      .filter((p) => ringContainsPoint(p.outer, hole.ring[0]))
+      .sort((p1, p2) => p1.area2.cmp(p2.area2))[0];
+    if (!host) {
+      diag.warn("W_ORPHAN_HOLE", { ring: hole.index });
+      continue;
+    }
+    host.holes.push(hole.ring);
+    host.area2 = host.area2.sub(hole.area2);
+  }
+  return polygons;
+}
+
+function ringContainsPoint(ring, p) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const a = ring[j];
+    const b = ring[i];
+    const aboveA = a.y.cmp(p.y) > 0;
+    const aboveB = b.y.cmp(p.y) > 0;
+    if (aboveA === aboveB) continue;
+    // x = ax + (bx-ax) * (py-ay)/(by-ay); compare with px exactly.
+    const lhs = p.x.sub(a.x).mul(b.y.sub(a.y));
+    const rhs = b.x.sub(a.x).mul(p.y.sub(a.y));
+    const crossing = lhs.cmp(rhs);
+    if (aboveB ? crossing < 0 : crossing > 0) inside = !inside;
+  }
+  return inside;
+}
+
+// Edges that carry no area on either side after merging (e.g. shared edges
+// that cancel), collinear splits, and zero-length remnants.
+function classifyDegenerateEdges(mergedEdges, boundaryKeys) {
+  const degenerate = [];
+  for (const edge of mergedEdges) {
+    const tags = [];
+    if (edge.a.x.equals(edge.b.x) && edge.a.y.equals(edge.b.y)) tags.push("zero-length");
+    const setIds = new Set(edge.sources.map((s) => s.setId));
+    if (setIds.size > 1) tags.push("shared");
+    // A shared edge cancels when contributing sets traverse it in opposite
+    // geometric directions, so the boundary contributions negate each other.
+    const directions = new Set(edge.sources.map((s) => s.direction));
+    if (setIds.size > 1 && directions.size > 1) tags.push("cancelled");
+    if (!boundaryKeys.has(edge.key)) tags.push("interior");
+    if (tags.length) {
+      degenerate.push({
+        a: qPoint(edge.a),
+        b: qPoint(edge.b),
+        tags,
+      });
+    }
+  }
+  return degenerate;
+}
+
+function qPoint(p) {
+  return { x: p.x, y: p.y, key: pointKey(p) };
+}
+
+// ---- Exact ear-clipping triangulation check --------------------------------
+
+function verifyTriangulable(polygon, diag, polygonIndex) {
+  const flat = bridgeHoles(polygon);
+  const triangles = earClip(flat);
+  if (!triangles) {
+    diag.error("E_TRIVIAL_INPUT", { polygon: polygonIndex, reason: "ear clipping failed" });
+    return { ok: false, triangles: [] };
+  }
+  const triArea = triangles.reduce(
+    (sum, t) => {
+      const a = signedArea2([t[0], t[1], t[2]]);
+      return sum.add(a.n < 0n ? a.neg() : a);
+    },
+    ZERO,
+  );
+  const expected = polygon.area2;
+  const ok = triArea.equals(expected);
+  if (!ok) {
+    diag.warn("W_AREA_MISMATCH", {
+      polygon: polygonIndex,
+      expected: expected.toString(),
+      triangulated: triArea.toString(),
+    });
+  }
+  return { ok, triangles: triangles.map((t) => t.map(qPoint)) };
+}
+
+function bridgeHoles(polygon) {
+  // Merge each CW hole into the outer CCW ring with a mutator bridge whose two
+  // endpoints are distinct, mutually visible points. The result is a genuinely
+  // simple CCW polygon, so ordinary ear clipping triangulates it directly.
+  let ring = polygon.outer.slice();
+  for (const hole of polygon.holes) {
+    let holeIndex = 0;
+    for (let i = 1; i < hole.length; i++) {
+      if (hole[i].x.cmp(hole[holeIndex].x) < 0) holeIndex = i;
+    }
+    const holeStart = hole[holeIndex];
+    const hit = leftRayHit(ring, holeStart);
+    const bridgeIndex = insertPoint(ring, hit.edgeIndex, hit.point);
+    const anchor = ring[bridgeIndex];
+    // Traverse the stored CW hole starting at its bridge vertex.
+    const holeCW = hole.slice(holeIndex).concat(hole.slice(0, holeIndex));
+    const next = ring.slice(bridgeIndex + 1);
+    ring = ring
+      .slice(0, bridgeIndex + 1)
+      .concat([holeStart], holeCW.slice(1), [holeStart], [anchor], next);
+    ring = dedupeConsecutive(ring);
+  }
+  return ring;
+}
+
+function leftRayHit(ring, from) {
+  let best = null;
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i];
+    const b = ring[(i + 1) % ring.length];
+    if (!a.y.equals(from.y) || !b.y.equals(from.y)) continue;
+    if (a.x.cmp(from.x) >= 0) continue;
+    const candidate = a.x.cmp(b.x) > 0 ? a : b;
+    if (!best || candidate.x.cmp(best.point.x) > 0) {
+      best = { edgeIndex: i, point: candidate };
+    }
+  }
+  if (best) return best;
+  // General (slanted) edge: solve for the horizontal-line intersection.
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i];
+    const b = ring[(i + 1) % ring.length];
+    const spans = (a.y.cmp(from.y) <= 0 && b.y.cmp(from.y) > 0)
+      || (b.y.cmp(from.y) <= 0 && a.y.cmp(from.y) > 0);
+    if (!spans) continue;
+    const t = from.y.sub(a.y).mul(new Q(b.y.sub(a.y).d, b.y.sub(a.y).n));
+    const px = a.x.add(b.x.sub(a.x).mul(t));
+    if (px.cmp(from.x) >= 0) continue;
+    if (!best || px.cmp(best.point.x) > 0) best = { edgeIndex: i, point: { x: px, y: from.y } };
+  }
+  if (!best) throw new Error("bridgeHoles: no outer-boundary intersection for hole");
+  return best;
+}
+
+function insertPoint(ring, edgeIndex, point) {
+  const a = ring[edgeIndex];
+  const b = ring[(edgeIndex + 1) % ring.length];
+  if (pointKey(a) === pointKey(point)) return edgeIndex;
+  if (pointKey(b) === pointKey(point)) return (edgeIndex + 1) % ring.length;
+  ring.splice(edgeIndex + 1, 0, point);
+  return edgeIndex + 1;
+}
+
+function dedupeConsecutive(ring) {
+  const out = [];
+  for (const p of ring) {
+    const last = out[out.length - 1];
+    if (!last || pointKey(last) !== pointKey(p)) out.push(p);
+  }
+  if (out.length > 1 && pointKey(out[0]) === pointKey(out[out.length - 1])) out.pop();
+  return out;
+}
+
+function earClip(ringIn) {
+  const initial = ringIn.slice();
+  const bridgeKeys = new Set();
+  const initialCounts = new Map();
+  for (const p of initial) {
+    const key = pointKey(p);
+    initialCounts.set(key, (initialCounts.get(key) ?? 0) + 1);
+  }
+  for (const [key, n] of initialCounts) if (n > 1) bridgeKeys.add(key);
+  const ring = removeCollinear(removeSpikes(initial));
+  const duplicateKeys = new Set();
+  const counts = new Map();
+  for (const p of ring) counts.set(pointKey(p), (counts.get(pointKey(p)) ?? 0) + 1);
+  for (const [key, n] of counts) if (n > 1) duplicateKeys.add(key);
+  for (const key of bridgeKeys) duplicateKeys.add(key);
+  if (ring.length < 3 || signedArea2(ring).n <= 0n) return null;
+  const triangles = [];
+  let guard = ring.length * ring.length + 8;
+  while (ring.length > 3 && guard-- > 0) {
+    const ear = findEar(ring, duplicateKeys);
+    if (ear < 0) return null;
+    triangles.push([ring[(ear - 1 + ring.length) % ring.length], ring[ear], ring[(ear + 1) % ring.length]]);
+    ring.splice(ear, 1);
+  }
+  if (ring.length !== 3) return null;
+  triangles.push([ring[0], ring[1], ring[2]]);
+  return triangles;
+}
+
+// Drop vertices lying on the straight line between their two neighbours; they
+// are arrangement split points that add no shape and stall ear selection.
+function removeCollinear(ring) {
+  let changed = true;
+  while (changed && ring.length > 3) {
+    changed = false;
+    for (let i = 0; i < ring.length; i++) {
+      const prev = ring[(i - 1 + ring.length) % ring.length];
+      const cur = ring[i];
+      const next = ring[(i + 1) % ring.length];
+      if (orient(prev, cur, next) === 0 && pointOnSegment(cur, prev, next)) {
+        ring.splice(i, 1);
+        changed = true;
+        break;
+      }
+    }
+  }
+  return ring;
+}
+
+// Zero-width bridges leave a weakly-simple ring and arrangement splits leave
+// collinear points. Only remove local zero-area spikes (prev === next); the
+// non-adjacent bridge duplicates are handled as edge-on points during ear
+// clipping rather than deleted, which would corrupt the polygon area.
+function removeSpikes(ring) {
+  let changed = true;
+  while (changed && ring.length >= 4) {
+    changed = false;
+    for (let i = 0; i < ring.length; i++) {
+      const prev = ring[(i - 1 + ring.length) % ring.length];
+      const next = ring[(i + 1) % ring.length];
+      if (pointKey(prev) === pointKey(next)) {
+        ring.splice(i, 1);
+        changed = true;
+        break;
+      }
+    }
+  }
+  return ring;
+}
+
+function findEar(ring, bridgeKeys) {
+  for (let i = 0; i < ring.length; i++) {
+    const prev = ring[(i - 1 + ring.length) % ring.length];
+    const cur = ring[i];
+    const next = ring[(i + 1) % ring.length];
+    if (orient(prev, cur, next) <= 0) continue;
+    let clean = true;
+    for (let j = 0; j < ring.length; j++) {
+      if (j === i || j === (i - 1 + ring.length) % ring.length || j === (i + 1) % ring.length) continue;
+      const candidate = ring[j];
+      // Bridge tips coincide geometrically and carry no area; ignore them.
+      if (bridgeKeys && bridgeKeys.has(pointKey(candidate))) continue;
+      if (pointInTriangle(candidate, prev, cur, next)) {
+        clean = false;
+        break;
+      }
+    }
+    if (clean) return i;
+  }
+  return -1;
+}
+
+function pointInTriangle(p, a, b, c) {
+  const o1 = orient(a, b, p);
+  const o2 = orient(b, c, p);
+  const o3 = orient(c, a, p);
+  const hasNeg = o1 < 0 || o2 < 0 || o3 < 0;
+  const hasPos = o1 > 0 || o2 > 0 || o3 > 0;
+  if (hasNeg && hasPos) return false;
+  return pointOnSegment(p, a, b) || pointOnSegment(p, b, c) || pointOnSegment(p, c, a)
+    || (o1 >= 0 && o2 >= 0 && o3 >= 0);
+}
+
+return { signedArea2, simplifyRing, classifyLoops, ringContainsPoint, classifyDegenerateEdges, verifyTriangulable };
+})();
+
+// module: ./src/index.js
+const m8 = (() => {
+// Public entry point: integer-grid area-boolean operations with diagnostics.
+
+const Diagnostics = m0.Diagnostics;
+const quantize = m2.quantize;
+const buildArrangement = m4.buildArrangement;
+const pointKey = m4.pointKey;
+const splitSelfTouchingLoops = m5.splitSelfTouchingLoops;
+const assembleLoops = m6.assembleLoops;
+const computeFaceWinding = m6.computeFaceWinding;
+const selectBoundaryEdges = m6.selectBoundaryEdges;
+const classifyDegenerateEdges = m7.classifyDegenerateEdges;
+const classifyLoops = m7.classifyLoops;
+const simplifyRing = m7.simplifyRing;
+const signedArea2 = m7.signedArea2;
+const verifyTriangulable = m7.verifyTriangulable;
+
+const OPERATIONS = ["union", "intersection", "difference", "xor"];
+
+function booleanPolygons(polygonSets, options = {}) {
+  const diag = new Diagnostics();
+  const operation = options.operation ?? "union";
+  if (!OPERATIONS.includes(operation)) {
+    diag.error("E_TRIVIAL_INPUT", { reason: `unknown operation ${operation}` });
+    return emptyResult(operation, diag);
+  }
+  if (!Array.isArray(polygonSets) || polygonSets.length < 2) {
+    diag.error("E_TRIVIAL_INPUT", { given: polygonSets?.length ?? 0 });
+    return emptyResult(operation, diag);
+  }
+
+  const rule = options.fillRule ?? "nonzero";
+  const quantized = quantize(polygonSets, options, diag);
+  const setIds = quantized.map((s) => s.id);
+
+  const mergedEdges = buildArrangement(quantized, diag);
+  const sourceSegments = collectSourceSegments(quantized);
+  computeFaceWinding(mergedEdges, sourceSegments, rule);
+
+  const boundary = selectBoundaryEdges(mergedEdges, operation, setIds, rule);
+  const loops = assembleLoops(boundary);
+  const simpleLoops = splitSelfTouchingLoops(loops);
+  const polygons = classifyLoops(simpleLoops, diag);
+
+  const boundaryKeys = new Set(boundary.map(({ edge }) => edge.key));
+  const degenerateEdges = classifyDegenerateEdges(mergedEdges, boundaryKeys);
+
+  const triangulation = polygons.map((poly, i) =>
+    verifyTriangulable(poly, diag, i),
+  );
+  const triangulable = triangulation.every((t) => t.ok);
+
+  if (!polygons.length) diag.info("I_ZERO_RESULT", {});
+
+  return {
+    operation,
+    fillRule: rule,
+    scale: options.scale ?? 1,
+    setIds,
+    polygons: polygons.map((p, i) => ({
+      outer: exportRing(simplifyRing(p.outer)),
+      holes: p.holes.map((h) => exportRing(simplifyRing(h))),
+      area2: p.area2.toString(),
+      area: p.area2.toNumber() / 2,
+      triangles: triangulation[i].triangles,
+    })),
+    degenerateEdges: degenerateEdges.map((e) => ({
+      a: exportPoint(e.a),
+      b: exportPoint(e.b),
+      tags: e.tags,
+    })),
+    quantizedInputs: quantized,
+    diagnostics: diag.toJSON(),
+    metrics: {
+      atomicEdges: mergedEdges.length,
+      boundaryEdges: boundary.length,
+      loopCount: loops.length,
+      polygonCount: polygons.length,
+      triangulable,
+    },
+  };
+}
+
+function collectSourceSegments(sets) {
+  const segments = [];
+  for (const set of sets) {
+    for (const poly of set.polygons) {
+      for (const ring of poly.rings.filter((r) => r.length >= 3)) {
+        for (let i = 0; i < ring.length; i++) {
+          segments.push({
+            a: ring[i],
+            b: ring[(i + 1) % ring.length],
+            setId: set.id,
+          });
+        }
+      }
+    }
+  }
+  return segments;
+}
+
+function exportRing(ring) {
+  return ring.map(exportPoint);
+}
+
+function exportPoint(p) {
+  return { x: p.x.toString(), y: p.y.toString(), n: [p.x.n, p.x.d, p.y.n, p.y.d] };
+}
+
+function emptyResult(operation, diag) {
+  return {
+    operation,
+    polygons: [],
+    degenerateEdges: [],
+    diagnostics: diag.toJSON(),
+    metrics: { atomicEdges: 0, boundaryEdges: 0, loopCount: 0, polygonCount: 0, triangulable: true },
+  };
+}
+
+
+
+return { OPERATIONS, booleanPolygons, Diagnostics, signedArea2, pointKey };
+})();
+
+// module: ./test/fixtures.js
+const m9 = (() => {
+// Deterministic fixtures covering the tricky geometric cases.
+
+const fixtures = {
+  // Two squares touching at exactly one vertex (tangent contact).
+  tangentSquares: [
+    {
+      id: "A",
+      polygons: [
+        { rings: [[[0, 0], [4, 0], [4, 4], [0, 4]]] },
+      ],
+    },
+    {
+      id: "B",
+      polygons: [
+        { rings: [[[4, 4], [8, 4], [8, 8], [4, 8]]] },
+      ],
+    },
+  ],
+
+  // Two squares sharing a full edge.
+  sharedEdge: [
+    {
+      id: "A",
+      polygons: [{ rings: [[[0, 0], [4, 0], [4, 4], [0, 4]]] }],
+    },
+    {
+      id: "B",
+      polygons: [{ rings: [[[4, 0], [8, 0], [8, 4], [4, 4]]] }],
+    },
+  ],
+
+  // B sits inside A's hole (nested hole + annular input).
+  nestedHole: [
+    {
+      id: "A",
+      polygons: [
+        {
+          rings: [
+            [[0, 0], [10, 0], [10, 10], [0, 10]],
+            [[3, 3], [3, 7], [7, 7], [7, 3]],
+          ],
+        },
+      ],
+    },
+    {
+      id: "B",
+      polygons: [{ rings: [[[4, 4], [6, 4], [6, 6], [4, 6]]] }],
+    },
+  ],
+
+  // Overlapping squares with a proper crossing intersection.
+  crossingSquares: [
+    {
+      id: "A",
+      polygons: [{ rings: [[[0, 0], [6, 0], [6, 6], [0, 6]]] }],
+    },
+    {
+      id: "B",
+      polygons: [{ rings: [[[4, 2], [10, 2], [10, 8], [4, 8]]] }],
+    },
+  ],
+
+  // Coordinates close to the half-grid rounding boundary (0.49 / 0.51).
+  nearThreshold: [
+    {
+      id: "A",
+      polygons: [{ rings: [[[0.49, 0.49], [3.51, 0.49], [3.51, 3.51], [0.49, 3.51]]] }],
+    },
+    {
+      id: "B",
+      polygons: [{ rings: [[[2.49, 2.49], [5.51, 2.49], [5.51, 5.51], [2.49, 5.51]]] }],
+    },
+  ],
+
+  // Edge that collapses to a point after snapping and a sub-triangle ring.
+  degenerates: [
+    {
+      id: "A",
+      polygons: [
+        { rings: [[[0, 0], [4.1, 0], [4.1, 4], [0.2, 4], [0, 0]].slice(0, 4)] },
+      ],
+    },
+    {
+      id: "B",
+      polygons: [{ rings: [[[2, 0.2], [6, 0.2], [6, 4], [2, 4]]] }],
+    },
+  ],
+
+  // Non-trivial polygon with diagonal edges and a hole.
+  diagonalHole: [
+    {
+      id: "A",
+      polygons: [
+        {
+          rings: [
+            [[0, 0], [8, 0], [10, 6], [4, 10], [0, 8]],
+            [[3, 3], [3, 6], [6, 6], [6, 3]],
+          ],
+        },
+      ],
+    },
+    {
+      id: "B",
+      polygons: [{ rings: [[[5, 5], [9, 5], [9, 9], [5, 9]]] }],
+    },
+  ],
+};
+
+function withScale(fixture, scale) {
+  return fixture.map((set) => ({
+    id: set.id,
+    polygons: set.polygons.map((poly) => ({
+      rings: poly.rings.map((ring) => ring.map(([x, y]) => [x * scale, y * scale])),
+    })),
+  }));
+}
+
+return { fixtures, withScale };
+})();
+
+// module: ./view/view.js
+const m10 = (() => {
+// Browser-side interaction layer: runs the exact same boolean engine used by
+// the Node tests and renders polygons, holes and degenerate edges on canvas.
+
+const booleanPolygons = m8.booleanPolygons;
+const fixtures = m9.fixtures;
+
+const state = {
+  fixture: "crossingSquares",
+  operation: "union",
+  showDegenerate: true,
+  showGrid: true,
+};
+
+const canvas = document.getElementById("stage");
+const ctx = canvas.getContext("2d");
+
+const OP_COLORS = {
+  union: "#2f7d4f",
+  intersection: "#2456a6",
+  difference: "#b35418",
+  xor: "#7a3fa0",
+};
+
+function init() {
+  const fixtureSelect = document.getElementById("fixture");
+  for (const name of Object.keys(fixtures)) {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    fixtureSelect.appendChild(option);
+  }
+  fixtureSelect.value = state.fixture;
+  fixtureSelect.addEventListener("change", () => {
+    state.fixture = fixtureSelect.value;
+    run();
+  });
+
+  document.querySelectorAll("[data-op]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.operation = button.dataset.op;
+      document.querySelectorAll("[data-op]").forEach((b) => b.classList.toggle("active", b === button));
+      run();
+    });
+  });
+  document.getElementById("toggle-degenerate").addEventListener("change", (e) => {
+    state.showDegenerate = e.target.checked;
+    run();
+  });
+  document.getElementById("toggle-grid").addEventListener("change", (e) => {
+    state.showGrid = e.target.checked;
+    run();
+  });
+  run();
+}
+
+function run() {
+  const result = booleanPolygons(fixtures[state.fixture], { operation: state.operation });
+  render(result);
+  renderDiagnostics(result);
+  renderMetrics(result);
+}
+
+function toNumber(point) {
+  return { x: Number(point.x), y: Number(point.y) };
+}
+
+function computeBounds(result) {
+  const points = [];
+  for (const set of result.quantizedInputs) {
+    for (const poly of set.polygons) {
+      for (const ring of poly.rings) ring.forEach((p) => points.push(toNumber(p)));
+    }
+  }
+  const xs = points.map((p) => p.x);
+  const ys = points.map((p) => p.y);
+  return {
+    minX: Math.min(...xs),
+    maxX: Math.max(...xs),
+    minY: Math.min(...ys),
+    maxY: Math.max(...ys),
+  };
+}
+
+function render(result) {
+  const bounds = computeBounds(result);
+  const width = canvas.width;
+  const height = canvas.height;
+  const pad = 28;
+  const spanX = Math.max(1, bounds.maxX - bounds.minX);
+  const spanY = Math.max(1, bounds.maxY - bounds.minY);
+  const scale = Math.min((width - pad * 2) / spanX, (height - pad * 2) / spanY);
+  const project = (p) => ({
+    x: pad + (p.x - bounds.minX) * scale,
+    y: height - pad - (p.y - bounds.minY) * scale,
+  });
+
+  ctx.clearRect(0, 0, width, height);
+  if (state.showGrid) drawGrid(bounds, project, width, height);
+  drawInputs(result, project);
+  drawResult(result, project);
+  if (state.showDegenerate) drawDegenerate(result, project);
+}
+
+function drawGrid(bounds, project, width, height) {
+  ctx.strokeStyle = "#e6e8ec";
+  ctx.lineWidth = 1;
+  for (let x = Math.floor(bounds.minX); x <= Math.ceil(bounds.maxX); x++) {
+    const from = project({ x, y: bounds.minY });
+    const to = project({ x, y: bounds.maxY });
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+  }
+  for (let y = Math.floor(bounds.minY); y <= Math.ceil(bounds.maxY); y++) {
+    const from = project({ x: bounds.minX, y });
+    const to = project({ x: bounds.maxX, y });
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+  }
+}
+
+function traceRing(ring, project) {
+  ctx.beginPath();
+  ring.forEach((point, index) => {
+    const p = project(toNumber(point));
+    if (index === 0) ctx.moveTo(p.x, p.y);
+    else ctx.lineTo(p.x, p.y);
+  });
+  ctx.closePath();
+}
+
+function drawInputs(result, project) {
+  const colors = ["rgba(60,110,200,0.10)", "rgba(210,120,40,0.10)"];
+  result.quantizedInputs.forEach((set, setIndex) => {
+    ctx.fillStyle = colors[setIndex % colors.length];
+    ctx.strokeStyle = setIndex === 0 ? "#3c6ec8" : "#d27828";
+    ctx.lineWidth = 1.5;
+    for (const poly of set.polygons) {
+      for (const ring of poly.rings) {
+        traceRing(ring, project);
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+  });
+}
+
+function drawResult(result, project) {
+  ctx.fillStyle = withAlpha(OP_COLORS[result.operation], 0.28);
+  ctx.strokeStyle = OP_COLORS[result.operation];
+  ctx.lineWidth = 2.5;
+  for (const poly of result.polygons) {
+    traceRing(poly.outer, project);
+    ctx.fill();
+    ctx.stroke();
+    for (const hole of poly.holes) {
+      traceRing(hole, project);
+      ctx.strokeStyle = "#c0392b";
+      ctx.stroke();
+      ctx.strokeStyle = OP_COLORS[result.operation];
+    }
+  }
+}
+
+function drawDegenerate(result, project) {
+  for (const edge of result.degenerateEdges) {
+    const a = project(toNumber(edge.a));
+    const b = project(toNumber(edge.b));
+    const color = edge.tags.includes("cancelled") ? "#c0392b" : "#8a6d3b";
+    ctx.strokeStyle = color;
+    ctx.lineWidth = edge.tags.includes("cancelled") ? 3 : 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+function withAlpha(hex, alpha) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function renderDiagnostics(result) {
+  const panel = document.getElementById("diagnostics");
+  if (!result.diagnostics.length) {
+    panel.innerHTML = '<li class="ok">无诊断信息</li>';
+    return;
+  }
+  panel.innerHTML = result.diagnostics
+    .map((entry) => `<li class="${entry.severity}"><code>${entry.code}</code> ${entry.message}</li>`)
+    .join("");
+}
+
+function renderMetrics(result) {
+  const panel = document.getElementById("metrics");
+  const rows = [
+    ["多边形数", result.metrics.polygonCount],
+    ["原子边", result.metrics.atomicEdges],
+    ["边界边", result.metrics.boundaryEdges],
+    ["环数", result.metrics.loopCount],
+    ["可三角化", result.metrics.triangulable ? "是" : "否"],
+  ];
+  panel.innerHTML = rows.map(([k, v]) => `<div><span>${k}</span><strong>${v}</strong></div>`).join("");
+}
+
+return { init };
+})();
+init();
+</script>
+  </body>
+</html>

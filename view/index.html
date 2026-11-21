@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>整数网格面状布尔操作</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header>
+        <h1>整数网格面状布尔操作</h1>
+        <p class="subtitle">精确有理运算 · 相切 / 共享边 / 嵌套洞 / 近阈值量化</p>
+      </header>
+
+      <section class="toolbar">
+        <label>
+          夹具
+          <select id="fixture"></select>
+        </label>
+        <div class="operations">
+          <button data-op="union" class="active">并集</button>
+          <button data-op="intersection">交集</button>
+          <button data-op="difference">差集</button>
+          <button data-op="xor">异或</button>
+        </div>
+        <label class="check"><input type="checkbox" id="toggle-degenerate" checked /> 退化边</label>
+        <label class="check"><input type="checkbox" id="toggle-grid" checked /> 网格</label>
+      </section>
+
+      <section class="content">
+        <canvas id="stage" width="640" height="560"></canvas>
+        <aside class="side">
+          <h2>指标</h2>
+          <div id="metrics" class="metrics"></div>
+          <h2>诊断</h2>
+          <ul id="diagnostics" class="diagnostics"></ul>
+          <h2>图例</h2>
+          <ul class="legend">
+            <li><span class="swatch input-a"></span>输入集合 A</li>
+            <li><span class="swatch input-b"></span>输入集合 B</li>
+            <li><span class="swatch result"></span>布尔结果</li>
+            <li><span class="swatch hole"></span>洞边界</li>
+            <li><span class="swatch cancelled"></span>抵消 / 退化边</li>
+          </ul>
+        </aside>
+      </section>
+    </main>
+    <script type="module" src="./view.js"></script>
+    <script type="module">
+      import { init } from "./view.js";
+      init();
+    </script>
+  </body>
+</html>

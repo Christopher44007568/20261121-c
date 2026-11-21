@@ -1,0 +1,14 @@
+{
+  "name": "grid-boolean",
+  "version": "1.0.0",
+  "description": "Exact area-boolean operations on an integer grid for map rendering",
+  "type": "module",
+  "scripts": {
+    "test": "node test/run-tests.js",
+    "demo": "node cli/demo.js",
+    "build:view": "node scripts/build-view.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
