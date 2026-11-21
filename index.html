@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fine Contact Shadows</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main id="app">
+      <canvas id="gl" aria-label="Deferred contact shadow viewport"></canvas>
+      <div id="split-labels" class="split-labels" aria-hidden="true">
+        <span>SS SHORT RAY</span><i></i><span>GEOMETRY REFERENCE</span>
+      </div>
+      <div id="split-line" class="split-line" aria-hidden="true"></div>
+      <div id="probe-reticle" class="probe-reticle" aria-hidden="true"></div>
+
+      <header class="masthead">
+        <p class="eyebrow"><b>DEFERRED</b> / REVERSE-Z / HI-Z</p>
+        <h1>Fine Contact Shadows</h1>
+        <p class="subtitle">Screen-space short rays with a max-depth pyramid</p>
+      </header>
+
+      <aside class="probe" aria-label="Trace probe">
+        <div class="probe-head">
+          <span><i></i> TRACE PROBE · <b id="probe-mode">AUTO</b></span>
+          <button id="probe-close" class="icon-button" aria-label="Hide probe">×</button>
+        </div>
+        <dl>
+          <div><dt>PIXEL</dt><dd id="probe-pixel">—</dd></div>
+          <div><dt>STEPS</dt><dd id="probe-steps">—</dd></div>
+          <div><dt>MIP</dt><dd id="probe-mip">—</dd></div>
+          <div><dt>HIT BASIS</dt><dd id="probe-basis">—</dd></div>
+          <div><dt>Z GAP</dt><dd id="probe-gap">—</dd></div>
+          <div><dt>3D REF</dt><dd id="probe-ref">—</dd></div>
+        </dl>
+        <p id="probe-note" class="probe-note">Move the probe over a contact area to inspect the trace.</p>
+      </aside>
+
+      <aside class="controls" aria-label="View controls">
+        <p class="control-label">VIEW</p>
+        <div class="button-grid" id="view-buttons">
+          <button data-view="beauty" class="active">Beauty</button>
+          <button data-view="shadow">SS shadow</button>
+          <button data-view="steps">Steps</button>
+          <button data-view="basis">Basis</button>
+          <button data-view="reference">3D ref</button>
+          <button data-view="compare">Compare</button>
+        </div>
+
+        <p class="control-label">TEST SHOT</p>
+        <div class="shot-list" id="shot-buttons">
+          <button data-shot="near" class="active"><b>01</b><span>Near contact<small>thin rod base</small></span></button>
+          <button data-shot="edge"><b>02</b><span>Screen edge<small>clipped ray</small></span></button>
+          <button data-shot="miss"><b>03</b><span>Distant miss<small>outside 0.9 m</small></span></button>
+        </div>
+
+        <label class="ray-control">
+          <span>SHORT RAY</span>
+          <input id="ray-length" type="range" min="0.3" max="1.4" step="0.05" value="0.9" />
+          <output id="ray-output">0.90 m</output>
+        </label>
+
+        <label class="orbit">
+          <input id="orbit" type="checkbox" />
+          <span>Animate orbit</span>
+        </label>
+      </aside>
+
+      <div class="legend">
+        <span><i class="depth"></i> depth gap</span>
+        <span><i class="edge"></i> screen edge</span>
+        <span><i class="range"></i> range end</span>
+        <span><i class="clear"></i> clear</span>
+      </div>
+      <footer class="status">
+        <span>1440 × 960</span>
+        <span>DEPTH24 · GREATER</span>
+        <span id="frame-time">—</span>
+      </footer>
+      <p id="error" class="error" hidden></p>
+    </main>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

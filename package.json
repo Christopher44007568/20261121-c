@@ -1,0 +1,15 @@
+{
+  "name": "fine-contact-shadows",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Deferred screen-space contact shadows with a reverse-Z max-depth pyramid",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "verify": "node scripts/verify.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.55.0"
+  }
+}
