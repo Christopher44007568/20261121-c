@@ -1,0 +1,842 @@
+{
+  "schema": "terra-local/projection-error-distribution@2",
+  "generatedAt": "2026-11-21T06:42:52.116Z",
+  "reference": "float64 CPU WGS84/ECEF/ENU projection",
+  "comparison": "float32 eye-relative (RTC) and float32 high + residual low split submission",
+  "units": "CSS pixels",
+  "width": 1440,
+  "height": 810,
+  "poseCount": 185,
+  "tourSeconds": 33.2,
+  "sampleCount": 1977,
+  "cameraRelative": {
+    "samples": 1977,
+    "mean": 0.000020564362159,
+    "median": 0.0000187990722339,
+    "p95": 0.0000405573518722,
+    "p99": 0.0000533225165999,
+    "max": 0.0000981569191283,
+    "min": 2.04024050044e-7,
+    "histogram": [
+      {
+        "lowerPixels": 0,
+        "upperPixels": 0.000001,
+        "count": 5
+      },
+      {
+        "lowerPixels": 0.000001,
+        "upperPixels": 0.00001,
+        "count": 275
+      },
+      {
+        "lowerPixels": 0.00001,
+        "upperPixels": 0.0001,
+        "count": 1697
+      },
+      {
+        "lowerPixels": 0.0001,
+        "upperPixels": 0.001,
+        "count": 0
+      },
+      {
+        "lowerPixels": 0.001,
+        "upperPixels": 0.01,
+        "count": 0
+      },
+      {
+        "lowerPixels": 0.01,
+        "upperPixels": 0.1,
+        "count": 0
+      },
+      {
+        "lowerPixels": 0.1,
+        "upperPixels": 1,
+        "count": 0
+      },
+      {
+        "lowerPixels": 1,
+        "upperPixels": null,
+        "count": 0
+      }
+    ]
+  },
+  "highLowSplit": {
+    "samples": 1977,
+    "mean": 0.0000349043413437,
+    "median": 0.0000318731609741,
+    "p95": 0.0000729970382179,
+    "p99": 0.000090755962533,
+    "max": 0.000185112524763,
+    "min": 2.04024050044e-7,
+    "histogram": [
+      {
+        "lowerPixels": 0,
+        "upperPixels": 0.000001,
+        "count": 2
+      },
+      {
+        "lowerPixels": 0.000001,
+        "upperPixels": 0.00001,
+        "count": 137
+      },
+      {
+        "lowerPixels": 0.00001,
+        "upperPixels": 0.0001,
+        "count": 1826
+      },
+      {
+        "lowerPixels": 0.0001,
+        "upperPixels": 0.001,
+        "count": 12
+      },
+      {
+        "lowerPixels": 0.001,
+        "upperPixels": 0.01,
+        "count": 0
+      },
+      {
+        "lowerPixels": 0.01,
+        "upperPixels": 0.1,
+        "count": 0
+      },
+      {
+        "lowerPixels": 0.1,
+        "upperPixels": 1,
+        "count": 0
+      },
+      {
+        "lowerPixels": 1,
+        "upperPixels": null,
+        "count": 0
+      }
+    ]
+  },
+  "absoluteF32": {
+    "samples": 1937,
+    "mean": 319.88802478,
+    "median": 0.349585685176,
+    "p95": 1243.76259227,
+    "p99": 3041.75663665,
+    "max": 13416.7578154,
+    "min": 0.0011069594817,
+    "histogram": [
+      {
+        "lowerPixels": 0,
+        "upperPixels": 0.000001,
+        "count": 0
+      },
+      {
+        "lowerPixels": 0.000001,
+        "upperPixels": 0.00001,
+        "count": 0
+      },
+      {
+        "lowerPixels": 0.00001,
+        "upperPixels": 0.0001,
+        "count": 0
+      },
+      {
+        "lowerPixels": 0.0001,
+        "upperPixels": 0.001,
+        "count": 0
+      },
+      {
+        "lowerPixels": 0.001,
+        "upperPixels": 0.01,
+        "count": 17
+      },
+      {
+        "lowerPixels": 0.01,
+        "upperPixels": 0.1,
+        "count": 592
+      },
+      {
+        "lowerPixels": 0.1,
+        "upperPixels": 1,
+        "count": 461
+      },
+      {
+        "lowerPixels": 1,
+        "upperPixels": null,
+        "count": 867
+      }
+    ]
+  },
+  "relativeMarkerStability": {
+    "samples": 7899,
+    "rtc": {
+      "samples": 7899,
+      "mean": 0.0000189398285827,
+      "median": 0.0000160224454315,
+      "p95": 0.0000469953231149,
+      "p99": 0.0000607985244874,
+      "max": 0.000123695782027,
+      "min": 7.76463039698e-10,
+      "histogram": [
+        {
+          "lowerPixels": 0,
+          "upperPixels": 0.000001,
+          "count": 260
+        },
+        {
+          "lowerPixels": 0.000001,
+          "upperPixels": 0.00001,
+          "count": 2276
+        },
+        {
+          "lowerPixels": 0.00001,
+          "upperPixels": 0.0001,
+          "count": 5359
+        },
+        {
+          "lowerPixels": 0.0001,
+          "upperPixels": 0.001,
+          "count": 4
+        },
+        {
+          "lowerPixels": 0.001,
+          "upperPixels": 0.01,
+          "count": 0
+        },
+        {
+          "lowerPixels": 0.01,
+          "upperPixels": 0.1,
+          "count": 0
+        },
+        {
+          "lowerPixels": 0.1,
+          "upperPixels": 1,
+          "count": 0
+        },
+        {
+          "lowerPixels": 1,
+          "upperPixels": null,
+          "count": 0
+        }
+      ]
+    },
+    "hilo": {
+      "samples": 7899,
+      "mean": 0.0000285387547735,
+      "median": 0.0000235839591198,
+      "p95": 0.0000730886388446,
+      "p99": 0.0000978133541301,
+      "max": 0.000177116840192,
+      "min": 9.87427029031e-10,
+      "histogram": [
+        {
+          "lowerPixels": 0,
+          "upperPixels": 0.000001,
+          "count": 190
+        },
+        {
+          "lowerPixels": 0.000001,
+          "upperPixels": 0.00001,
+          "count": 1555
+        },
+        {
+          "lowerPixels": 0.00001,
+          "upperPixels": 0.0001,
+          "count": 6087
+        },
+        {
+          "lowerPixels": 0.0001,
+          "upperPixels": 0.001,
+          "count": 67
+        },
+        {
+          "lowerPixels": 0.001,
+          "upperPixels": 0.01,
+          "count": 0
+        },
+        {
+          "lowerPixels": 0.01,
+          "upperPixels": 0.1,
+          "count": 0
+        },
+        {
+          "lowerPixels": 0.1,
+          "upperPixels": 1,
+          "count": 0
+        },
+        {
+          "lowerPixels": 1,
+          "upperPixels": null,
+          "count": 0
+        }
+      ]
+    }
+  },
+  "picking": {
+    "note": "cpuRayMatchRate is generated here; renderPathMatchRate is filled by scripts/capture.js from Chromium color-ID readback",
+    "referenceSamples": 1977,
+    "rtc": {
+      "samples": 1977,
+      "cpuRayMatches": 987,
+      "cpuRayMatchRate": 0.4992412746585736,
+      "renderPathMatches": null,
+      "renderPathMatchRate": null
+    },
+    "hilo": {
+      "samples": 1977,
+      "cpuRayMatches": 987,
+      "cpuRayMatchRate": 0.4992412746585736,
+      "renderPathMatches": null,
+      "renderPathMatchRate": null
+    },
+    "closeOrbit": {
+      "note": "markers are separated by 50 mm at close range; no billboard overlap is expected",
+      "rtc": {
+        "samples": 936,
+        "cpuRayMatches": 848,
+        "cpuRayMatchRate": 0.905982905982906
+      },
+      "hilo": {
+        "samples": 936,
+        "cpuRayMatches": 848,
+        "cpuRayMatchRate": 0.905982905982906
+      },
+      "unoccluded": {
+        "note": "reference centers at least one billboard diameter from every other marker",
+        "rtc": {
+          "samples": 824,
+          "cpuRayMatches": 824,
+          "cpuRayMatchRate": 1
+        },
+        "hilo": {
+          "samples": 824,
+          "cpuRayMatches": 824,
+          "cpuRayMatchRate": 1
+        }
+      }
+    }
+  },
+  "bySite": {
+    "bund": {
+      "projection": {
+        "samples": 942,
+        "rtc": {
+          "samples": 942,
+          "mean": 0.0000201750292756,
+          "median": 0.0000187696589398,
+          "p95": 0.0000382640265158,
+          "p99": 0.0000518439366105,
+          "max": 0.0000870816488378,
+          "min": 2.04024050044e-7,
+          "histogram": [
+            {
+              "lowerPixels": 0,
+              "upperPixels": 0.000001,
+              "count": 2
+            },
+            {
+              "lowerPixels": 0.000001,
+              "upperPixels": 0.00001,
+              "count": 124
+            },
+            {
+              "lowerPixels": 0.00001,
+              "upperPixels": 0.0001,
+              "count": 816
+            },
+            {
+              "lowerPixels": 0.0001,
+              "upperPixels": 0.001,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.001,
+              "upperPixels": 0.01,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.01,
+              "upperPixels": 0.1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.1,
+              "upperPixels": 1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 1,
+              "upperPixels": null,
+              "count": 0
+            }
+          ]
+        },
+        "hilo": {
+          "samples": 942,
+          "mean": 0.000033565740521,
+          "median": 0.000031388383113,
+          "p95": 0.0000695642487193,
+          "p99": 0.0000882271128554,
+          "max": 0.000101178376506,
+          "min": 2.04024050044e-7,
+          "histogram": [
+            {
+              "lowerPixels": 0,
+              "upperPixels": 0.000001,
+              "count": 1
+            },
+            {
+              "lowerPixels": 0.000001,
+              "upperPixels": 0.00001,
+              "count": 69
+            },
+            {
+              "lowerPixels": 0.00001,
+              "upperPixels": 0.0001,
+              "count": 870
+            },
+            {
+              "lowerPixels": 0.0001,
+              "upperPixels": 0.001,
+              "count": 2
+            },
+            {
+              "lowerPixels": 0.001,
+              "upperPixels": 0.01,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.01,
+              "upperPixels": 0.1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.1,
+              "upperPixels": 1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 1,
+              "upperPixels": null,
+              "count": 0
+            }
+          ]
+        },
+        "absoluteF32": {
+          "samples": 936,
+          "mean": 243.15901185,
+          "median": 0.234272387299,
+          "p95": 903.069573007,
+          "p99": 1688.37939964,
+          "max": 5289.16906506,
+          "min": 0.00541964151303,
+          "histogram": [
+            {
+              "lowerPixels": 0,
+              "upperPixels": 0.000001,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.000001,
+              "upperPixels": 0.00001,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.00001,
+              "upperPixels": 0.0001,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.0001,
+              "upperPixels": 0.001,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.001,
+              "upperPixels": 0.01,
+              "count": 8
+            },
+            {
+              "lowerPixels": 0.01,
+              "upperPixels": 0.1,
+              "count": 355
+            },
+            {
+              "lowerPixels": 0.1,
+              "upperPixels": 1,
+              "count": 132
+            },
+            {
+              "lowerPixels": 1,
+              "upperPixels": null,
+              "count": 441
+            }
+          ]
+        }
+      },
+      "relativeMarkerStability": {
+        "samples": 3759,
+        "rtc": {
+          "samples": 3759,
+          "mean": 0.0000191697552332,
+          "median": 0.0000161731043859,
+          "p95": 0.0000473983275039,
+          "p99": 0.0000593550072489,
+          "max": 0.000103744997368,
+          "min": 7.76463039698e-10,
+          "histogram": [
+            {
+              "lowerPixels": 0,
+              "upperPixels": 0.000001,
+              "count": 109
+            },
+            {
+              "lowerPixels": 0.000001,
+              "upperPixels": 0.00001,
+              "count": 1076
+            },
+            {
+              "lowerPixels": 0.00001,
+              "upperPixels": 0.0001,
+              "count": 2573
+            },
+            {
+              "lowerPixels": 0.0001,
+              "upperPixels": 0.001,
+              "count": 1
+            },
+            {
+              "lowerPixels": 0.001,
+              "upperPixels": 0.01,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.01,
+              "upperPixels": 0.1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.1,
+              "upperPixels": 1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 1,
+              "upperPixels": null,
+              "count": 0
+            }
+          ]
+        },
+        "hilo": {
+          "samples": 3759,
+          "mean": 0.0000279934497098,
+          "median": 0.0000235173899827,
+          "p95": 0.0000688933372055,
+          "p99": 0.0000924599788232,
+          "max": 0.000150298771024,
+          "min": 1.5824553487e-8,
+          "histogram": [
+            {
+              "lowerPixels": 0,
+              "upperPixels": 0.000001,
+              "count": 79
+            },
+            {
+              "lowerPixels": 0.000001,
+              "upperPixels": 0.00001,
+              "count": 750
+            },
+            {
+              "lowerPixels": 0.00001,
+              "upperPixels": 0.0001,
+              "count": 2915
+            },
+            {
+              "lowerPixels": 0.0001,
+              "upperPixels": 0.001,
+              "count": 15
+            },
+            {
+              "lowerPixels": 0.001,
+              "upperPixels": 0.01,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.01,
+              "upperPixels": 0.1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.1,
+              "upperPixels": 1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 1,
+              "upperPixels": null,
+              "count": 0
+            }
+          ]
+        }
+      }
+    },
+    "lujiazui": {
+      "projection": {
+        "samples": 1035,
+        "rtc": {
+          "samples": 1035,
+          "mean": 0.000020918711508,
+          "median": 0.0000188227592805,
+          "p95": 0.0000414737003395,
+          "p99": 0.0000564806118219,
+          "max": 0.0000981569191283,
+          "min": 5.21269212615e-7,
+          "histogram": [
+            {
+              "lowerPixels": 0,
+              "upperPixels": 0.000001,
+              "count": 3
+            },
+            {
+              "lowerPixels": 0.000001,
+              "upperPixels": 0.00001,
+              "count": 151
+            },
+            {
+              "lowerPixels": 0.00001,
+              "upperPixels": 0.0001,
+              "count": 881
+            },
+            {
+              "lowerPixels": 0.0001,
+              "upperPixels": 0.001,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.001,
+              "upperPixels": 0.01,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.01,
+              "upperPixels": 0.1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.1,
+              "upperPixels": 1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 1,
+              "upperPixels": null,
+              "count": 0
+            }
+          ]
+        },
+        "hilo": {
+          "samples": 1035,
+          "mean": 0.0000361226620924,
+          "median": 0.000032613547706,
+          "p95": 0.0000740863161036,
+          "p99": 0.000097742767448,
+          "max": 0.000185112524763,
+          "min": 5.21269212615e-7,
+          "histogram": [
+            {
+              "lowerPixels": 0,
+              "upperPixels": 0.000001,
+              "count": 1
+            },
+            {
+              "lowerPixels": 0.000001,
+              "upperPixels": 0.00001,
+              "count": 68
+            },
+            {
+              "lowerPixels": 0.00001,
+              "upperPixels": 0.0001,
+              "count": 956
+            },
+            {
+              "lowerPixels": 0.0001,
+              "upperPixels": 0.001,
+              "count": 10
+            },
+            {
+              "lowerPixels": 0.001,
+              "upperPixels": 0.01,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.01,
+              "upperPixels": 0.1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.1,
+              "upperPixels": 1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 1,
+              "upperPixels": null,
+              "count": 0
+            }
+          ]
+        },
+        "absoluteF32": {
+          "samples": 1001,
+          "mean": 391.634634274,
+          "median": 0.375870382371,
+          "p95": 1719.99084569,
+          "p99": 4134.88878345,
+          "max": 13416.7578154,
+          "min": 0.0011069594817,
+          "histogram": [
+            {
+              "lowerPixels": 0,
+              "upperPixels": 0.000001,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.000001,
+              "upperPixels": 0.00001,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.00001,
+              "upperPixels": 0.0001,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.0001,
+              "upperPixels": 0.001,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.001,
+              "upperPixels": 0.01,
+              "count": 9
+            },
+            {
+              "lowerPixels": 0.01,
+              "upperPixels": 0.1,
+              "count": 237
+            },
+            {
+              "lowerPixels": 0.1,
+              "upperPixels": 1,
+              "count": 329
+            },
+            {
+              "lowerPixels": 1,
+              "upperPixels": null,
+              "count": 426
+            }
+          ]
+        }
+      },
+      "relativeMarkerStability": {
+        "samples": 4140,
+        "rtc": {
+          "samples": 4140,
+          "mean": 0.0000187310618486,
+          "median": 0.0000158387777044,
+          "p95": 0.000046616233654,
+          "p99": 0.0000624363658015,
+          "max": 0.000123695782027,
+          "min": 9.87427029031e-10,
+          "histogram": [
+            {
+              "lowerPixels": 0,
+              "upperPixels": 0.000001,
+              "count": 151
+            },
+            {
+              "lowerPixels": 0.000001,
+              "upperPixels": 0.00001,
+              "count": 1200
+            },
+            {
+              "lowerPixels": 0.00001,
+              "upperPixels": 0.0001,
+              "count": 2786
+            },
+            {
+              "lowerPixels": 0.0001,
+              "upperPixels": 0.001,
+              "count": 3
+            },
+            {
+              "lowerPixels": 0.001,
+              "upperPixels": 0.01,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.01,
+              "upperPixels": 0.1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.1,
+              "upperPixels": 1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 1,
+              "upperPixels": null,
+              "count": 0
+            }
+          ]
+        },
+        "hilo": {
+          "samples": 4140,
+          "mean": 0.0000290338759654,
+          "median": 0.000023639816128,
+          "p95": 0.0000756947028766,
+          "p99": 0.000103442132042,
+          "max": 0.000177116840192,
+          "min": 9.87427029031e-10,
+          "histogram": [
+            {
+              "lowerPixels": 0,
+              "upperPixels": 0.000001,
+              "count": 111
+            },
+            {
+              "lowerPixels": 0.000001,
+              "upperPixels": 0.00001,
+              "count": 805
+            },
+            {
+              "lowerPixels": 0.00001,
+              "upperPixels": 0.0001,
+              "count": 3172
+            },
+            {
+              "lowerPixels": 0.0001,
+              "upperPixels": 0.001,
+              "count": 52
+            },
+            {
+              "lowerPixels": 0.001,
+              "upperPixels": 0.01,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.01,
+              "upperPixels": 0.1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 0.1,
+              "upperPixels": 1,
+              "count": 0
+            },
+            {
+              "lowerPixels": 1,
+              "upperPixels": null,
+              "count": 0
+            }
+          ]
+        }
+      }
+    }
+  }
+}
