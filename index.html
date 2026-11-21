@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="无 UV 悬崖网格的世界尺度 triplanar 材质检查器"
+    />
+    <title>World Triplanar Cliff Lab</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="viewport" aria-label="Triplanar cliff viewer"></canvas>
+
+      <header class="masthead">
+        <div class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+        <div>
+          <p class="eyebrow">无 UV 悬崖着色研究 · CLIFF STUDY</p>
+          <h1>World Triplanar Lab</h1>
+        </div>
+        <div class="status">
+          <span class="status-dot"></span>
+          <span>WORLD PROJECTED</span>
+        </div>
+      </header>
+
+      <aside class="control-panel" aria-label="Material controls">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">MATERIAL · 无 UV</p>
+            <h2>Triplanar 投影控制</h2>
+          </div>
+          <button id="reset" class="icon-button" title="Reset all controls" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4.9 5.1A9 9 0 1 1 3 12h2a7 7 0 1 0 1.3-4.1L9 10.6H3V4.6l1.9.5Z" />
+            </svg>
+          </button>
+        </div>
+
+        <section class="control-section">
+          <div class="section-title">
+            <span>轴向混合权重</span>
+            <button id="normalize-weights" class="text-button" type="button">等权</button>
+          </div>
+          <div id="weight-controls" class="weight-controls"></div>
+          <label class="range-row" for="contrast">
+            <span>混合锐度</span>
+            <output id="contrast-value">6.0</output>
+            <input id="contrast" type="range" min="1" max="16" step="0.1" value="6" />
+          </label>
+        </section>
+
+        <section class="control-section">
+          <div class="section-title"><span>世界空间映射</span></div>
+          <label class="range-row" for="tile-size">
+            <span>贴图尺度</span>
+            <output id="tile-size-value">1.00 m</output>
+            <input id="tile-size" type="range" min="0.35" max="3" step="0.05" value="1" />
+          </label>
+          <label class="range-row" for="normal-strength">
+            <span>法线强度</span>
+            <output id="normal-strength-value">1.00×</output>
+            <input id="normal-strength" type="range" min="0" max="2" step="0.05" value="1" />
+          </label>
+          <div class="toggle-grid">
+            <label class="toggle">
+              <input id="flip-g" type="checkbox" />
+              <span class="switch"></span>
+              <span>翻转 G 通道</span>
+            </label>
+            <label class="toggle">
+              <input id="flip-x" type="checkbox" />
+              <span class="switch"></span>
+              <span>翻转法线 X</span>
+            </label>
+          </div>
+        </section>
+
+        <section class="control-section">
+          <div class="section-title"><span>诊断视图</span></div>
+          <div id="view-modes" class="segmented" role="group" aria-label="View mode">
+            <button type="button" data-mode="lit" class="active">光照</button>
+            <button type="button" data-mode="albedo">颜色</button>
+            <button type="button" data-mode="normal">法线</button>
+            <button type="button" data-mode="weights">权重</button>
+          </div>
+          <label class="range-row" for="light-azimuth">
+            <span>光照方位角</span>
+            <output id="light-azimuth-value">−38°</output>
+            <input id="light-azimuth" type="range" min="-180" max="180" step="1" value="-38" />
+          </label>
+          <label class="range-row" for="light-elevation">
+            <span>光照高度角</span>
+            <output id="light-elevation-value">36°</output>
+            <input id="light-elevation" type="range" min="-10" max="85" step="1" value="36" />
+          </label>
+          <label class="toggle sweep-toggle">
+            <input id="light-sweep" type="checkbox" />
+            <span class="switch"></span>
+            <span>扫光检查接缝</span>
+          </label>
+        </section>
+
+        <section class="control-section camera-section">
+          <div class="section-title"><span>检查视角</span></div>
+          <div id="camera-presets" class="camera-presets">
+            <button type="button" data-preset="overview" class="active">总览</button>
+            <button type="button" data-preset="ceiling">洞顶 ↑</button>
+            <button type="button" data-preset="underside">底面</button>
+            <button type="button" data-preset="mirror">镜像</button>
+          </div>
+        </section>
+      </aside>
+
+      <div class="legend" aria-label="Projection legend">
+        <span><i class="axis-x"></i>X · YZ plane</span>
+        <span><i class="axis-y"></i>Y · XZ plane</span>
+        <span><i class="axis-z"></i>Z · XY plane</span>
+      </div>
+
+      <div id="view-readout" class="view-readout">
+        <span class="readout-kicker">当前检查 / CURRENT TEST</span>
+        <strong>总览</strong>
+        <span>无 UV · 世界尺度 1 m · 程序化法线</span>
+      </div>
+
+      <div class="scale-card">
+        <span class="scale-line"><i></i><b>1 m</b></span>
+        <span>world-space tile · 世界尺度</span>
+      </div>
+
+      <div id="labels" class="labels" aria-hidden="true"></div>
+
+      <footer class="footer">
+        <span>拖拽旋转</span>
+        <span>滚轮缩放</span>
+        <span>网格无 UV 属性</span>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
