@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MSDF 烘焙与显示原型</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>MSDF 烘焙与显示原型</h1>
+      <p>
+        自建轮廓导入 · 尖角 / 洞 / 重叠轮廓 · 屏幕导数边缘过渡 · 单通道 SDF 失真对比
+      </p>
+    </header>
+
+    <main>
+      <aside id="controls">
+        <section>
+          <h2>1. 字形轮廓</h2>
+          <select id="glyphSelect"></select>
+          <label class="file">
+            导入 SVG path / 折线 JSON
+            <input type="file" id="fileInput" accept=".json,.svg,.txt" />
+          </label>
+          <details>
+            <summary>折线 JSON 格式示例</summary>
+            <pre id="jsonExample"></pre>
+          </details>
+          <label>
+            环绕规则
+            <select id="windingRule">
+              <option value="nonzero">nonzero（洞靠反向环绕）</option>
+              <option value="evenodd">even-odd（奇偶挖空）</option>
+            </select>
+          </label>
+        </section>
+
+        <section>
+          <h2>2. 烘焙参数</h2>
+          <label>纹理尺寸 <output id="sizeVal">64</output>
+            <input type="range" id="texSize" min="16" max="128" step="8" value="64" />
+          </label>
+          <label>距离范围 (px) <output id="rangeVal">4</output>
+            <input type="range" id="pxRange" min="1" max="8" step="1" value="4" />
+          </label>
+          <label>
+            采样过滤
+            <select id="filterMode">
+              <option value="mipmap">LINEAR_MIPMAP_LINEAR</option>
+              <option value="linear">LINEAR（关闭 mipmap）</option>
+            </select>
+          </label>
+        </section>
+
+        <section>
+          <h2>3. 差分视角</h2>
+          <label>放大倍率 <output id="scaleVal">26</output>
+            <input type="range" id="diffScale" min="6" max="60" step="1" value="26" />
+          </label>
+          <label>水平斜切 <output id="skewXVal">0.70</output>
+            <input type="range" id="skewX" min="0" max="1.2" step="0.05" value="0.7" />
+          </label>
+          <label>垂直斜切 <output id="skewYVal">0.15</output>
+            <input type="range" id="skewY" min="0" max="0.8" step="0.05" value="0.15" />
+          </label>
+          <button id="rerun">重新运行差分</button>
+          <table id="metricsTable"></table>
+          <table id="boundaryTable"></table>
+        </section>
+
+        <section>
+          <h2>字段预览</h2>
+          <div class="fields">
+            <figure><canvas id="msdfTex"></canvas><figcaption>RGB = MSDF</figcaption></figure>
+            <figure><canvas id="sdfTex"></canvas><figcaption>A = 单通道 SDF</figcaption></figure>
+          </div>
+        </section>
+      </aside>
+
+      <section id="stage">
+        <h2>WebGL 空间字牌（拖拽旋转 · 滚轮缩放）</h2>
+        <canvas id="glCanvas"></canvas>
+        <div id="legend">
+          <span><i style="background:#7fd1ff"></i>MSDF 字牌</span>
+          <span><i style="background:#ffb86b"></i>单通道 SDF 字牌</span>
+          <span><i style="background:#444"></i>背板</span>
+        </div>
+      </section>
+
+      <section id="diff">
+        <h2>栅格差分（左到右：解析 GT · MSDF · SDF · 硬误差热图）</h2>
+        <div class="diffGrid">
+          <figure><canvas id="gtCanvas"></canvas><figcaption>解析环绕真值</figcaption></figure>
+          <figure><canvas id="msdfCanvas"></canvas><figcaption>MSDF 重建</figcaption></figure>
+          <figure><canvas id="sdfCanvas"></canvas><figcaption>单通道 SDF</figcaption></figure>
+          <figure><canvas id="heatCanvas"></canvas>
+            <figcaption>红=孔洞被填 · 蓝=实体被削</figcaption>
+          </figure>
+        </div>
+        <h2>放大倍率扫描（硬误差像素数）</h2>
+        <table id="sweepTable"></table>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

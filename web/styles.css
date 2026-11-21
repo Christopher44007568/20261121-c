@@ -1,0 +1,138 @@
+:root {
+  color-scheme: dark;
+  --bg: #12141a;
+  --panel: #1a1d26;
+  --line: #2a2f3c;
+  --text: #e6e9f0;
+  --muted: #9aa3b5;
+  --accent: #7fd1ff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font: 14px/1.5 system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header {
+  padding: 16px 24px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+header h1 { margin: 0 0 4px; font-size: 20px; }
+header p { margin: 0; color: var(--muted); }
+
+main {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 16px;
+  padding: 16px 24px 32px;
+  align-items: start;
+}
+
+#diff { grid-column: 1 / -1; }
+
+aside, section {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+h2 { font-size: 14px; margin: 0 0 10px; color: var(--accent); }
+section + section, aside section + section { margin-top: 18px; }
+
+label { display: block; margin: 8px 0; color: var(--muted); }
+label output { float: right; color: var(--text); }
+
+select, input[type="range"], button {
+  width: 100%;
+  margin-top: 4px;
+}
+
+select, button {
+  background: #222632;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 9px;
+}
+
+button { cursor: pointer; }
+button:hover { border-color: var(--accent); }
+
+.file {
+  display: block;
+  padding: 8px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+}
+.file input { display: none; }
+
+pre {
+  max-height: 180px;
+  overflow: auto;
+  font-size: 11px;
+  background: #0e1016;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+#glCanvas {
+  width: 100%;
+  height: 460px;
+  display: block;
+  border-radius: 8px;
+  background: #0b0d12;
+  touch-action: none;
+}
+
+#legend { display: flex; gap: 18px; margin-top: 8px; color: var(--muted); }
+#legend i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 6px;
+}
+
+.fields, .diffGrid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+figure { margin: 0; text-align: center; }
+figure canvas {
+  width: 150px;
+  height: 150px;
+  image-rendering: pixelated;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #0b0d12;
+}
+
+.diffGrid figure canvas { width: 200px; height: 200px; }
+figcaption { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 8px;
+}
+th, td {
+  border: 1px solid var(--line);
+  padding: 4px 6px;
+  text-align: right;
+}
+th { color: var(--muted); background: #161922; }
+td:first-child, th:first-child { text-align: left; }
+
+.bad { color: #ff7b72; font-weight: 600; }
+.ok { color: #7ee787; }

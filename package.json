@@ -1,0 +1,11 @@
+{
+  "name": "msdf-bake-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "MSDF baking and WebGL display prototype with custom outline import",
+  "scripts": {
+    "test": "node --test 'test/**/*.test.js'",
+    "serve": "python3 -m http.server 8080"
+  }
+}
