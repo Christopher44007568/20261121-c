@@ -1,0 +1,18 @@
+; Engine configuration file.
+; Godot 4.2.2 road generation component project.
+config_version=5
+
+[application]
+
+config/name="Procedural Road Toolkit"
+run/main_scene="res://demo/road_demo.tscn"
+config/features=PackedStringArray("4.2", "Forward Plus")
+
+[autoload]
+
+AnalysisBootstrap="*res://analysis/analysis_bootstrap.gd"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
