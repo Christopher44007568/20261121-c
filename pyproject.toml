@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "meshbrush"
+version = "0.1.0"
+description = "View-ray circular brush for triangle-mesh painting"
+requires-python = ">=3.10"
+dependencies = ["numpy"]
+
+[project.optional-dependencies]
+viewer = ["matplotlib"]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["meshbrush*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
