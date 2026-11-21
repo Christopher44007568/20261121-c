@@ -1,0 +1,6 @@
+.godot/
+.venv/
+__pycache__/
+*.pyc
+*.avi
+artifacts/*.log
